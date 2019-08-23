@@ -34,7 +34,7 @@ A RStudio server can be accessed via a web browser for this class. All the data 
 
 ### Log In
 
-To login in to the server, open the url for this lab (*Coming Soon!*). Once successfully authenticated, you will see the following RStudio interface. 
+To login in to the server, open the url for this lab [here](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fepurdom%2FStat131Public%2F&urlpath=rstudio). Once successfully authenticated, you will see the following RStudio interface. 
 
 ![_A screen shot of Rstudio on initial startup_](figures/RStudio.png)
 
