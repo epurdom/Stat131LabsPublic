@@ -76,6 +76,20 @@ To run one line or several line of code in an R script, put your cursor in that 
 
 ![_Create an R script_](figures/new_script.png)
 
+## Working Directory
+
+Your working directory is the folder on your computer in which you are currently working. When you ask R to open a certain file, it will look in the working directory for this file, and when you tell R to save a data file or figure, it will save it in the working directory. 
+
+Before you start working, please set your working directory to where all your data and script files are or should be stored. You can browse and choose working directory by going to `Session` -> `Set working directory` -> `Choose directory ...` as follows.
+
+![](figures/change_wd.png)
+
+Change your working directory to where the uploaded lab 00 files should be:
+
+`Stat131Public` -> `2019Fall` -> `Labs` -> `lab00`
+
+
+
 ## RStudio Layout
 
 The RStudio interface contains several component:
@@ -90,7 +104,7 @@ This window will contain the files you are working on, and is hidden on initial 
 
 If you do not have any files open, this editor may not show up (like when you first opened RStudio). You can make this window appear by creating a new document (e.g. with the menu bar in the top `File` -> `New File` -> `R Script`.) or opening a file ( `File` -> `Open file ...`). The editor supports multiple file type, including R script, R markdown, R notebooks, and Sweave files. 
 
-For example, open the R script  `example.R` in the lab 0 folder and try to run the code (you don't have to understand the code). You can run the code by either cutting and pasting into the console, or highlighting the code and clicking `Run` button. 
+For example, open the R script  `example.R` in the lab 0 folder (under Stat131APublic/2019Fall/Labs/lab00) and try to run the code (you don't have to understand the code). You can run the code by either cutting and pasting into the console, or highlighting the code and clicking `Run` button. 
 
 Try adding the following code to the `example.R` file and running it:
 
@@ -123,13 +137,6 @@ hist(C)
 + **packages**: install and load packages.
 + **help**: search and view the help document. 
 
-## Working Directory
-
-Your working directory is the folder on your computer in which you are currently working. When you ask R to open a certain file, it will look in the working directory for this file, and when you tell R to save a data file or figure, it will save it in the working directory. 
-
-Before you start working, please set your working directory to where all your data and script files are or should be stored. You can browse and choose working directory by going to `Session` -> `Set working directory` -> `Choose directory ...` as follows.
-
-![](figures/change_wd.png)
 
 ## Packages
 
@@ -768,7 +775,17 @@ summary(vec2)
 vec2.fac <- factor(vec2)
 summary(vec2.fac)
 ```
-Notice how R treats the variable differently now that it's a factor -- the function `summary` gives entirely different results for the factor vector as it does the character vector. 
+
+Notice how R treats the variable differently now that it's a factor -- the function `summary` gives entirely different results for the factor vector as it does the character vector. In fact, `summary` for a factor works like the function `table`, which simply counts the number of times each unique entry is present.
+
+```{r}
+# table of factor
+table(vec2.fac)
+# table of character
+table(vec2)
+# table of numeric
+table(c(1,4,2,4,2,1))
+```
 
 We can also create factors from numeric vectors. This may not feel intuitive -- character values feel like they are naturally categorical. However, many times categorical variables might be encoded as numeric (e.g. 1=No, 2=Maybe, 3=Yes )
 
