@@ -34,7 +34,7 @@ A RStudio server can be accessed via a web browser for this class. All the data 
 
 ### Log In
 
-To login in to the server, open the url for this lab [here](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fepurdom%2FStat131Public%2F&urlpath=rstudio). Once successfully authenticated, you will see the following RStudio interface. 
+To login in to the server, open the url for this lab [here](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fepurdom%2FStat131Public&urlpath=rstudio). Once successfully authenticated, you will see the following RStudio interface. 
 
 ![_A screen shot of Rstudio on initial startup_](figures/RStudio.png)
 
@@ -88,7 +88,12 @@ Change your working directory to where the uploaded lab 00 files should be:
 
 `Stat131Public` -> `2019Fall` -> `Labs` -> `lab00`
 
+<img src="figures/wd_after.png" width="272" height="232" />
 
+
+After doing this, you should see that the tab in the lower right marked files should show the files that you imported in starting the session
+
+<img src="figures/wd_filesAfter.png" width="356" height="178" />
 
 ## RStudio Layout
 
@@ -127,6 +132,9 @@ In the environment window you can see the data, values and functions you created
 
 #### files/plots/packages/help tabs (Bottom right)
 + **files**: By double clicking the file name, you can open files, then view and edit them in the editor. You can upload files from your own device to the server by clicking the `Upload` botton. To download files from server, check the box before that file and go to `More` -> `Export`. This is useful, for example, if you are working on the web server, and then want to move your files to your own computer and work on your desktop version of R.
+
+After changing your working directory, you should see the files that were imported
+
 + **plot**: The plots tab will display the graphs. It allows you to go back to pervious plots (by clicking on the left-arrow icon) and export plot as image or pdf. If you highlight the following code and click `Run` you should see a histogram come up in this tab.
 
 ```{r}
@@ -161,7 +169,7 @@ While R Scripts contains only R code, R Markdown enable us to create dynamic doc
 
 To create an R Markdown file, click on `File` -> `New File` -> `R Markdown`. You should now see a dialog as shown below. Select ‘Document’ in the left panel and fill in title and author field and hit ‘OK’.
 
-![](figures/create_RMarkdown.png)
+<img src="figures/create_RMarkdown.png" width="325" height="261" />
 
 You should now have a document which looks like this:
 
@@ -203,7 +211,7 @@ or will show them in the console which look like this:
 
 You can change between these two options under the "gear" button):
 
-![](figures/Rstudio_rchunk_render.png)
+<img src="figures/Rstudio_rchunk_render.png" width="150" height="200" />
 
 Similar as in R script file, you can instead run one or several lines of code from the R Markdown. To run several lines of code, You may select a piece of code as follows:
 
@@ -242,11 +250,11 @@ When you when save this notebook, it will save both the `.Rmd` file and also a h
 
 You can see this file by going to the "Preview" button at the top (which will force you to save the file)
 
-![](figures/Rnb_preview_button.png)
+<img src="figures/Rnb_preview_button.png" width="246" height="46" />
 
 In the Viewer tab, you should see a html come up with the results. You can see the code and plot below, and this html has the option to hide your code.
 
-![](figures/Rnb_nbhtml_runcode.png)
+<img src="figures/Rnb_nbhtml_runcode.png" width="331" height="367" />
 
 This html file is not like the html file from our simple R markdown from before. Before, with a simple R markdown, when we "knit" our `.Rmd` file, it reran all of our code *from scratch* and created a html of the output. This means that all the code has to be able to run in sequence correctly.
 
@@ -274,7 +282,7 @@ This can be convenient to be able to see (and save) exactly where you are in ter
 
 So while this preview can be handy, you still need to be able to compile it completely from scratch to know that everything works. The preview button has a drop down menu that gives you the option to do this (i.e. compile them like standard `.Rmd` documents)
 
-![](figures/Rnb_preview_dropdown.png)
+<img src="figures/Rnb_preview_dropdown.png" width="178" height="161" />
 
 By clicking "Knit to html" (or pdf) you can make sure the entire thing compiles fresh from the beginning (which is what we will do in testing that your code works).
 
