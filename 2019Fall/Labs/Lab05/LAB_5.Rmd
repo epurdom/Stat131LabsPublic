@@ -237,25 +237,41 @@ Do regression on the r index using the predictor `time`. Get the estimate of the
 
 \pagebreak
 
-`log.female.ci`
+`r log.female.ci`
 
-`log.male.ci`
+'
 
-`log.diff.ci`
+`r log.male.ci`
 
-`Ex1c.answer`
+'
 
+`r log.diff.ci`
 
-`obs.d`
+'
 
-`test`
+`r Ex1c.answer`
 
-`boot`
+'
 
-`boot.ci`
+`r obs.d`
 
-`Ex2f.answer`
+'
 
+`r test`
 
-`r.slope`
+'
+
+`r boot`
+
+'
+
+`r boot.ci`
+
+'
+
+`r Ex2f.answer`
+
+'
+
+`r r.slope`
 
