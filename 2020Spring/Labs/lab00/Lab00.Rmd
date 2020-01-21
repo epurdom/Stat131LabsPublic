@@ -1,7 +1,7 @@
 ---
 title: "Lab 0"
 author: "STAT 131A"
-date: "August 28, 2019"
+date: "January 21, 2020"
 output:
   html_document: 
     toc: true
