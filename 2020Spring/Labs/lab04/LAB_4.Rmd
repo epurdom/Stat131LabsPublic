@@ -1,0 +1,181 @@
+---
+title: "LAB 4"
+author: "STAT 131"
+date: "Sep 25, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Read in data.
+
+```{r}
+craigslist <- read.csv("craigslist.csv", 
+                       header = TRUE, stringsAsFactors = FALSE)
+one.bedrooms <- craigslist[craigslist$brs == 1, ]
+```
+
+### Simulation: when will the t-test fail
+
+Following four functions generate four types of sample (You can ignore the details concerning how the samples are generated.)
+
+- **generate.sample1**: Small sample size (5) and normal distributed samples.
+- **generate.sample2**: Small sample size (5) and non-normal distributed samples.
+- **generate.sample3**: Large sample size (100) and non-normal distributed samples.
+- **generate.sample4**: Large sample size (100), normal distirbuted but sample not independent.
+
+```{r}
+generate.sample1 <- function(){
+  sample <- rnorm(5)
+  return(sample)
+}
+
+generate.sample2 <- function(){
+  sample <- rgamma(5, 1.5, 2)
+  return(sample)
+}
+
+generate.sample3 <- function(){
+  sample <- rcauchy(100, 0, 1)
+  return(sample)
+}
+
+generate.sample4 <- function(){
+  sample <- arima.sim(n = 100, list(ar = c(1, -0.5), ma = c(0.3)))
+  return(sample)
+}
+```
+
+If you run the function, such as `generate.sample1`, it will generate the corresponding samples.
+
+```{r}
+samples <- generate.sample1()
+samples
+```
+
+
+**Exercise 3.**
+
+Please complete the function `simulation`. It accept the name of the above sample generation functions and return the estimated type I error. Please follow the following steps for completing the function `simulation`:
+
+1. generate two samples from the function `FUN`.
+2. calculate the p-value using t-test.
+3. repeat 1 and 2 for N times.
+4. calculate the chance of rejecting the null hypothesis $H_0:\mu_1 = \mu_2$ when the significant level is set to 0.05. (that is, the estimated Type I Error) HINT: The chance of rejecting the null can be estimated by ((The number of rejections) / N) = ((The number of p values less or equal than 0.05) / N).
+
+```{r}
+simulation <- function(FUN, N = 10000){
+  # FUN: function name for sample generation
+  # N: number of repetitions
+
+  
+}
+```
+
+\pagebreak
+
+After complete your function above, you can run the following code:
+
+```{r e31}
+set.seed(123456) # please do not modify the seed
+simulation(generate.sample1)
+```
+
+```{r e32}
+set.seed(123456) # please do not modify the seed
+simulation(generate.sample2)
+```
+
+```{r e33}
+set.seed(123456) # please do not modify the seed
+simulation(generate.sample3)
+```
+
+```{r e34}
+set.seed(123456) # please do not modify the seed
+simulation(generate.sample4)
+```
+
+Since the null hypothesis is true when we generate the data, the estimated Type I error should be close to 0.05 as we increase the number of repetitions. However, you may observe that t-test fails except for the first sample.  
+
+From the simulation, which test do you think is better for the Craigslist dataset? why?
+
+```{e35}
+Write your non-coding answer here.
+
+```
+
+\pagebreak
+
+# Bonferroni correction
+
+**Exercise 4.**
+
+(a) Perform t-test on the meam price difference for each pairwise city combinations. Save the p-values in vector `p.values`. For which city pairs we can not reject the null hypothesis that mean rent price is equal? (under level 0.05) Again, you can use `apply` or for loops, but `apply` is recommended.
+
+```{r e4a1}
+cities <- unique(craigslist$location) # get the vector of unique city names
+cities.combn <- combn(cities, 2) # this will give you all the possible combinations of two cities
+# insert code here save the number of postings for Berkeley as
+# 'p.values'
+p.values <- apply(cities.combn, 2, function(x){
+  # The price vector for city 1 (x[1])
+  # city1data <- 
+  # The price vector for city 2 (x[2])
+  # city2data <- 
+  # return the p value of t test
+  # p <- 
+  # return(p)
+})
+```
+
+```{r e4a2}
+# You can not reject the null hypothesis that mean rent price for the following city pairs.
+# (Subset the `cities.combn`.)
+# save the your answer as
+# 'not.reject'
+not.reject = c()
+```
+
+\pagebreak
+
+(b) Perform Bonferroni corrections on the p-values. For which city pairs we can not reject the null hypothesis that mean rent price is equal? (under level 0.05)
+
+```{r e4b1}
+# insert code here save you answer as
+# 'p.values.adj'
+p.values.adj = c()
+```
+
+```{r e4b2}
+# You can not reject the null hypothesis that mean rent price for the following city pairs.
+# (Subset the `cities.combn`.)
+# (After Bonferroni corrections)
+# insert code here save you answer as
+# 'not.reject.adj'
+not.reject.adj = c()
+```
+
+\pagebreak
+
+```{r}
+p.values
+```
+
+```{r}
+not.reject
+```
+
+```{r}
+p.values.adj
+```
+
+```{r}
+not.reject.adj
+```
+
+
