@@ -1,0 +1,312 @@
+---
+title: "LAB 6"
+author: "STAT 131A"
+date: "October 10, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to LAB 6!
+
+
+# Linear models
+
+We will continue working with the Google Trend dataset for R and Python. Recall the dataset we obtained contains the following variables:
+
+- **week**: beginning date of the week (recent 5 years)
+- **python**: trend of the search term **Data science Python**
+- **r**: trend of the search term **Data science r**
+
+![](google_trend.png)
+
+
+Read the data.
+
+```{r}
+data_science <- read.csv("data_science.csv")
+# convert string to date object 
+data_science$week <- as.Date(data_science$week, "%Y-%m-%d")
+# create a numeric column representing the time
+data_science$time <- as.numeric(data_science$week)
+data_science$time <- data_science$time - data_science$time[1] + 1
+```
+
+The plot in the Google Trend page looks somewhat linear. So we will try linear model first. Note that in the `lm` function for the model $y = \beta_0 + \beta_1x + e$, you don't need to add the intercept term explicitly. Fitting the model with an intercept term is the default when you pass the formula as `y ~ x`. If you would like to fit a model without an intercept($y = \beta_1x + e$, ), you need the formula `y ~ x - 1`.
+
+```{r}
+python.lm <- lm(python ~ time, data = data_science)
+r.lm <- lm(r ~ time, data = data_science)
+```
+
+```{r}
+summary(r.lm)
+```
+
+\pagebreak
+
+**Exercise 1.**
+
+Read the output of `lm`.
+
+(a) Which of the folowing formula will you use to predict the search index of `data science r` at time `t`.
+
+A. -10.034179 + 0.038423 t
+
+B. 1.116414 + 0.001065 t
+
+C. -10.034179 + 1.116414 t
+
+D. 0.038423 + 0.001065 t
+
+
+
+(b) Calculate the t-statistics for the intercept and the slope using the coefficient estimates and standard deviations. (Please copy and paste the numbers you need from the output of `summary` function.) Are your results consistent with the ones given in the summary?
+
+```{r}
+# Insert your code here and save the t-statistic for the intercept 
+
+
+# Insert your code here and save the t-statistic for the slope
+
+
+```
+
+(c) Calculate the p-value for the intercept and the slope using the test statistics you get in (b). What are the null hypothesis and your conclusion? Please use the normal distribution to approximate the distribution of test statistics under the null. Are your results consistent with the ones given in the summary?
+
+```{r}
+# Insert your code here and save the p-value for the intercept
+
+
+# Insert your code here and save the t-statistic for the slope
+
+
+```
+
+
+(d) Construct the confidence interval for the intercept and the slope using the coefficient estimates and standard deviations. (Please copy and paste the numbers you need from the output of `summary` function.) Will you accept or reject the null given the confidence interval you calculated?
+
+```{r}
+# Insert your code here and save the confidence interval for the intercept
+
+# Insert your code here and save the confidence interval for the slope 
+
+```
+
+\pagebreak
+
+# More on plots in R
+
+### Function `plot`
+
+The function `plot` is the most standard plotting function in R. When taking only one vector, it plots the vector against the index vector. 
+
+```{r, fig.width=6, fig.height=3.5}
+plot(data_science$python)
+```
+
+When taking two vectors, it plots the scatter plot.
+
+```{r, fig.width=6, fig.height=3.5}
+plot(data_science$time, data_science$r)
+```
+
+The `plot` function can also accept a data frame as the parameter. And it plots all variables against each other.
+
+```{r, fig.width=6, fig.height=3.5}
+plot(data_science)
+```
+
+### Low-level graphics functions
+
+The `plot` function introduced above is a high-level plot function, which produces complete plots. There are also low-level functions that add further outputs to an existing plot. You have already seen some high-level functions such as `hist`, `boxplot` and `curve`. `lines` is a low-level function which can not be called directly.
+
+Commenly used low-level functions includes:
+
+- `points(x, y)`: Adds points to the current plot. `x` and `y` are vectors of coordinates.
+- `lines(x, y)`: Add line to the current plot by joining the points with line segments.
+- `text(x, y, labels, ...)`: Add text to a plot at points given by x, y.
+- `abline(a, b)`:  Adds a line of slope b and intercept a to the current plot.
+- `abline(h=y)`: Adds a horizontal line.
+- `abline(v=x) `: Adds a vertical line.
+- `legend(x, y, legend, ...)`: Add legends to plots
+
+```{r, fig.width=6, fig.height=4}
+curve(dnorm, xlim = c(-3, 3), ylim = c(0, 0.5))  # create a plot for the density of normal distribution
+lines(density(rnorm(1000)), col = "red") # add a line (kernel density estimation) to the plot created
+abline(v=qnorm(0.025)) # add a vertical line (0.025 quanitle of standrad normal distribution)
+abline(v=qnorm(0.975)) # add a vertical line (0.975 quanitle of standrad normal distribution)
+text(-2, 0.3, "0.025 quantile") # add text
+text(2, 0.3, "0.975 quantile") # add text
+legend("topright", c("density function", "density estimation"), 
+       lwd=c(2.5,2.5), # Line widths in the legend
+       col=c("black", "red")) # Add legend
+```
+
+### par()
+
+The par() function is used to access and modify the list of graphics parameters. For example, to put several plots in the same window, use `par(mfrow = c(a, b))`. `a` is the number of rows and `b` is the number of columns. This command will allow you to plot `a*b` plots in one window.
+
+```{r, fig.width=6, fig.height=4}
+par(mfrow=c(1, 2))
+plot(data_science$time, data_science$r)
+plot(data_science$time, data_science$python)
+```
+
+
+\pagebreak
+
+**Exercise 2.**
+
+Functions and plots for the lm fit.
+
+(a) Get the coefficients of the linear models fit on `data science r` search index using function `coef`. (This is equivalent to the dollar sign plus "coefficients")
+
+```{r}
+# Insert your code here and save the coefficients vector 
+
+```
+
+(b) Get the confidence intervals of the linear models fit on `data science r` search index using function `confint`. 
+
+```{r}
+# Insert your code here and save the confidence intervals 
+
+```
+
+(c) Get the prediction of `data science r` search index on "2013-01-06" (time point 435) and "2015-01-04"(time point 1163), using function `predict`. What is the absolute error of the prediction?
+
+HINT: absolute error = |prediction - true value|
+
+```{r}
+# Insert your code here and save the coefficients vector and prediction error 
+
+
+# Insert your code here and save the coefficients vector and prediction error 
+
+
+```
+
+(d) Plot the fittings. Plot the scatter plot of time versus the search index for `data science r` and `data science python`. Color the points with red and blue. Plot the fitted linear line with color. 
+
+```{r}
+# Insert the code here
+
+```
+
+# Polynomial models
+
+**Exercise 3.** As you may discover, the linear model is not quite good for your dataset. In this exercise, you will fit a cubic curve to the data (use time to predict `r` and `python`). You may want to refer to the code in Page 23 and 24 in Lecture 3. (old lab, not sure if still these pages)
+
+(a) Fit the cubic model.
+
+```{r}
+# Insert your code here and save your fitted model as
+# `python.poly` and `r.poly`
+# python.poly <- 
+# summary(python.poly)
+# r.poly<- 
+# summary(r.poly)
+```
+
+(b) In the fitting for `r` and `python` search index, which of the following term is significant (not equal to zero)?
+
+```{r}
+# Uncomment the line of your answer for this question: (r)
+# intercept.r.sig <- TRUE
+# time.r.sig <- TRUE
+# time.r.square.sig <- TRUE
+# time.r.cubic.sig <- TRUE
+```
+
+```{r}
+# Uncomment the line of your answer for this question: (python)
+# intercept.python.sig <- TRUE
+# time.python.sig <- TRUE
+# time.python.square.sig <- TRUE
+# time.python.cubic.sig <- TRUE
+```
+
+(c) Plot the scatter plot and the fitted line. Color the groups with red and blue. How will you describe the trend of r search and python search?
+
+```{r}
+# Insert your code here for plotting
+
+```
+
+\pagebreak
+
+## Reading - Caveat
+
+Google trend seems so powerful and accessible. However, when analyzing some topics, we would rather not to use it. Why? Consider the following two examples.
+
+### Global Warming & Pirates
+
+Back to 2008, there is an obvious negative correlation between [global warming and pirate](https://www.google.com/trends/explore?date=2008-02-01\%202008-04-30&q=global\%20warming,pirates) searching, which may just be a coincidence. If you fit a linear model, the coefficients are significant.
+
+```{r}
+pirate <- read.csv("pirate.csv")
+pirate$Day <- as.Date(pirate$Day, "%Y-%m-%d")
+data_science$time <- as.numeric(data_science$week)
+data_science$time <- as.numeric(data_science$week) - as.numeric(data_science$week)[1]
+```
+
+```{r}
+plot(pirate$Day, pirate$pirates, cex = 0.5, col = "blue4",
+     xlab = "Time", ylab = "Relative Trend", ylim = c(0, 100),
+     main = "Google trend of pirate and gobal warming")
+points(pirate$Day, pirate$global.warming, cex = 0.5, col = "red4")
+lines(pirate$Day, pirate$pirates, col = "blue")
+lines(pirate$Day, pirate$global.warming, col = "red")
+legend("topright",c("pirate", "global warming"), fill=c("blue4","red4"))
+```
+
+```{r}
+pirate.lm <- lm(global.warming ~ pirates, data = pirate)
+
+plot(pirate$pirates, pirate$global.warming, cex = 0.5, col = "blue4",
+     xlab = "pirates", ylab = "global warming",
+     main = "Google trend of pirate and gobal warming")
+abline(pirate.lm)
+
+cor(pirate$pirates, pirate$global.warming)
+```
+
+```{r}
+summary(pirate.lm)
+```
+
+### The Failure of Google Flu Trend
+
+[Google Flu Trend](https://www.google.org/flutrends/about/) was first launched in 2008 (The Google research paper: [Detecting influenza epidemics using search engine query data](http://static.googleusercontent.com/media/research.google.com/zh-CN//archive/papers/detecting-influenza-epidemics.pdf)). It was widely recognized an exciting event in the big data application In the 2009 flu pandemic, Google Flu Trends tracked information about flu in the United States. In February 2010, the CDC (the U.S. Centers for Disease Control and Prevention) identified influenza cases spiking in the mid-Atlantic region of the United States. However, Google’s data of search queries about flu symptoms was able to show that same spike two weeks prior to the CDC report being released.
+
+The model was initially based on the flu data from 2003-2008. Google Flu Trend prediction performs well at the beginning. However, it’s been wrong since August 2011. The subsequent report continuously overestimates the flu prevalence. And now Google Flu Trends is no longer publishing current estimates of Flu based on search patterns.
+
+In a Science article, a team of researchers described Google Flu Trend as "Big Data Hubris":
+
+"The core challenge is that most big data that
+have received popular attention are not the
+output of instruments designed to produce
+valid and reliable data amenable for scientific analysis."
+
+```{r}
+flu <- read.csv("flu.csv", stringsAsFactors = FALSE)
+flu$Date <- as.Date(flu$Date)
+```
+
+```{r}
+plot(flu$Date, flu$California, 
+     type = "o", cex = 0.4, 
+     xlab="Age (days)",
+     ylab="Circumference (mm)" )
+```
+
+Reference and further reading:
+
+- [The Parable of Google Flu: Traps in Big Data Analysis](http://science.sciencemag.org/content/343/6176/1203.figures-only)
+
+- [Google Flu Trends’ Failure Shows Good Data > Big Data](https://hbr.org/2014/03/google-flu-trends-failure-shows-good-data-big-data)
+
+- [Google Flu Trend](https://en.wikipedia.org/wiki/Google_Flu_Trends#cite_note-pcworld-4)
