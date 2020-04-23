@@ -1,0 +1,107 @@
+---
+title: "LAB 11"
+author: "STAT 131"
+date: "November 21, 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to the lab 11! In this lab, you will
+
+- Do regression diagnosis on the datasets from the previous labs.
+
+# Regression dianosis
+
+## Red wine dataset
+
+Let's first look at the red wine quality prediction dataset from lab 10.
+
+Read data.
+
+```{r}
+wine<- read.csv("winequality-red.csv", sep = ";")
+wine$quality <- wine$quality + rnorm(length(wine$quality))
+```
+
+Fit the model.
+```{r}
+wine.fit <- lm(quality~volatile.acidity+chlorides+free.sulfur.dioxide+total.sulfur.dioxide+pH+sulphates+alcohol, data=wine)
+summary(wine.fit)
+```
+
+**Exercise 1**
+
+(a) Do regression diagnostics using the `plot` function.
+
+```{r}
+# insert your code here to do regression diagnostics.
+
+```
+
+(b) Answer the following TRUE/FALSE questions based on the diagnostics plot. Uncomment your answer.
+
+```{r}
+### I. The plot indicates heteroscedasticity.
+# TRUE
+# FALSE
+### II. There are non-linearity between the explantory variable and response variable.
+# TRUE
+# FALSE
+### III. The normal assumtion holds for this model.
+# TRUE
+# FALSE
+```
+
+(c) Identify at least two outliers from the data. 
+
+```{}
+
+```
+> I think the sample ??? and ??? are outliers.
+
+
+## Diamond dataset
+
+Now let us look at the diamond dataset from lab 9. 
+
+Read the data.
+
+```{r}
+diamonds <- read.csv("diamonds.csv")
+diamonds <- diamonds[sample(1:nrow(diamonds), 1000), ]
+head(diamonds)
+```
+
+Fit a linear regression.
+
+```{r}
+diamond.fit <- lm(price ~ carat + cut + color + clarity + depth + table, data = diamonds)
+summary(diamond.fit)
+```
+
+**Exercise 2**
+
+(a) Do regression diagnostics using the `plot` function.
+
+```{r}
+# insert your code here to do regression diagnostics.
+
+```
+
+(b) Answer the following TRUE/FALSE questions based on the diagnostics plot. Uncomment your answer.
+
+```{r}
+### I. The plot indicates heteroscedasticity.
+# TRUE
+# FALSE
+### II. There are non-linearity between the explantory variable and response variable.
+# TRUE
+# FALSE
+### III. The normal assumtion holds for this model.
+# TRUE
+# FALSE
+```
+
