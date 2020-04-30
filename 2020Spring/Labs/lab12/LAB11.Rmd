@@ -1,0 +1,243 @@
+---
+title: "LAB 11"
+author: "STAT 131"
+date: "November 21, 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to the lab 11! In this lab, you will
+
+- Do regression diagnosis on the datasets from the previous labs and perform stepwise regression.
+
+# Regression dianosis
+
+## Red wine dataset
+
+Let's first look at the red wine quality prediction dataset from lab 10.
+
+Read data.
+
+```{r}
+wine<- read.csv("winequality-red.csv", sep = ";")
+wine$quality <- wine$quality + rnorm(length(wine$quality))
+```
+
+Fit the model.
+```{r}
+wine.fit <- lm(quality~volatile.acidity+chlorides+free.sulfur.dioxide+total.sulfur.dioxide+pH+sulphates+alcohol, data=wine)
+summary(wine.fit)
+```
+
+**Exercise 1**
+
+(a) Do regression diagnostics using the `plot` function.
+
+```{r}
+# insert your code here to do regression diagnostics.
+
+```
+
+(b) Answer the following TRUE/FALSE questions based on the diagnostics plot. Uncomment your answer.
+
+```{r}
+### I. The plot indicates heteroscedasticity.
+# TRUE
+# FALSE
+### II. There are non-linearity between the explantory variable and response variable.
+# TRUE
+# FALSE
+### III. The normal assumtion holds for this model.
+# TRUE
+# FALSE
+```
+
+(c) Identify at least two outliers from the data. 
+
+```{}
+
+```
+> I think the sample ??? and ??? are outliers.
+
+
+## Diamond dataset
+
+Now let us look at the diamond dataset from lab 9. 
+
+Read the data.
+
+```{r}
+diamonds <- read.csv("diamonds.csv")
+diamonds <- diamonds[sample(1:nrow(diamonds), 1000), ]
+head(diamonds)
+```
+
+Fit a linear regression.
+
+```{r}
+diamond.fit <- lm(price ~ carat + cut + color + clarity + depth + table, data = diamonds)
+summary(diamond.fit)
+```
+
+**Exercise 2**
+
+(a) Do regression diagnostics using the `plot` function.
+
+```{r}
+# insert your code here to do regression diagnostics.
+
+```
+
+(b) Answer the following TRUE/FALSE questions based on the diagnostics plot. Uncomment your answer.
+
+```{r}
+### I. The plot indicates heteroscedasticity.
+# TRUE
+# FALSE
+### II. There are non-linearity between the explantory variable and response variable.
+# TRUE
+# FALSE
+### III. The normal assumtion holds for this model.
+# TRUE
+# FALSE
+```
+
+
+
+Today, we will perform stepwise regression and regression on find the best subset of predictors to predict the red wine quality using physicochemical tests scores such as citric acid, pH, etc.
+
+The dataset is related to red variants of the Portuguese "Vinho Verde" wine. There are 1599 samples available in the dataset. Due to privacy and logistic issues, only physicochemical (inputs) and sensory (the output) variables are available (e.g. there is no data about grape types, wine brand, wine selling price, etc.). 
+
+The explanatory variables are all continuous variables based on physicochemical tests:
+
+- **fixed acidity**
+- **volatile acidity**
+- **citric acid**
+- **residual sugar**
+- **chlorides**
+- **free sulfur dioxide**
+- **total sulfur dioxide**
+- **density**
+- **pH**
+- **sulphates**
+- **alcohol**
+
+The response variable is the **quality** score between 0 and 10 (based on sensory data).
+
+Read data. We randomly split the data into two parts-the `wine` dataset with 1199 samples and the `wine.test` dataset with 400 samples. Splitting the dataset is a common technique when we want to evaluate the model performance. There are training set, validation set, and test set. The validation set is used for model selection. That is, to estimate the performance of the different model in order to choose the best one. The test set is used for estimating the performance of our final model.
+
+```{r}
+set.seed("20170413")
+wine.dataset <- read.csv("winequality-red.csv", sep = ";")
+test.samples <- sample(1:nrow(wine.dataset), 400)
+wine <- wine.dataset[-test.samples, ]
+wine.test <- wine.dataset[test.samples, ]
+```
+
+We now fit the linear regression using all of the explanatory variables:
+
+```{r}
+wine.fit <- lm(quality ~. ,data = na.omit(wine))
+summary(wine.fit)
+```
+
+**Exercise 3 Backward Elimination based on p-values**
+
+We start with our full model `wine.fit`.
+
+(a) Remove the term with the highest p-value in the full model. Print the summary of your updated model.
+
+```{r}
+# insert your code here and save your updated model as `wine.backward`
+# wine.backward <- 
+# summary(wine.backward)
+
+```
+
+
+(b) In R, there are functions which help us to automatically do variable selection. The `step` function uses the AIC criteria, which is very similar to RSS but also takes the number of explanatory variables into account, to do stepwise variable selection. For example, to do backward elimination starting with our full model:
+
+```{r}
+step(wine.fit, direction = "backward")
+```
+
+Now try to understand the output of `step` function. Write down the order of variable elimination and the final model.
+
+```{}
+Order of variable elimination:
+
+
+Final model:
+
+```
+
+(c) Start from the model with only intercept term. Use the step function to do the forward selection. Write down the order of variable addition and the final model. HINT: (a) Use the `scope` argument in step function. (b) Use `formula` function to get the formula of your full model.
+
+```{r}
+# Insert your code here
+
+```
+
+```{}
+Order of variable addition:
+
+
+Final model:
+
+
+```
+
+
+**Exercise 4 regression on all subsets of variables **
+
+To find the optimal subset of a certain number of variables for a regression, and to compare between different numbers of variables, use the regsubsets() function.
+
+```{r}
+require(leaps)
+regsub_out = regsubsets(x=wine[,-12] , y= wine[,12] )
+
+```
+
+Default max subset size set by nvmax argument to 8.
+
+```{r}
+coef(regsub_out, 7)
+```
+
+Optimal subset of each size is chosen by RSS. To compare between different sizes, must convert to AIC.
+
+```{r}
+coef(regsub_out, 1:3)
+```
+
+What is the best model of size 1 variable? Size 7? Is the size 7 optimal the same as that found in exercise 1?
+
+```{r}
+
+```
+
+> answer here
+> 
+
+
+**Exercise 5 compare performance on test set (ungraded)**
+
+Use the test set to assess the performance of our optimal fit from above using stepwise regression and the full model. What is the root mean square error on test set for the two models?
+
+```{r}
+
+```
+```{r}
+
+```
+> 
+
+
+
+
+
+
+
