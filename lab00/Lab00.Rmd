@@ -5,7 +5,9 @@ date: "January 6, 2023"
 output:
   html_document: 
     toc: true
-    toc_depth: 2   
+    toc_depth: 2  
+    toc_float: true 
+    css: "custom.css"
 ---
 
 ```{r setup, include=FALSE}
@@ -14,11 +16,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This lab is expected to be self-paced and make sure that everyone is familiar with R and RStudio. This is a *long* lab, but we expect that for everyone, parts of this will be review and parts will be new. All of these concepts will continue to be reinforced in future labs.
 
-In particular, for Data 8 students working in R and R Studio will be new. For those students, who are more familiar with python, there are special notes about how R commands compare to python commands (if you're coming from STAT 20, you can ignore these comments). You will find that the basic concepts from python will transfer over, and you just need to concentrate on figuring out the difference in syntax.
-
-For Stat 20 students this will feel very familiar, but some of the programming concepts, like how to write your own function and for-loops may be new. (Data 8 students will be familiar with these concepts, but should focus on the syntax in R). Please *slowly* go over these sections and if you are not clear ask for help in lab or do some outside google searches to find further tutorials on these concepts. For additional R support, see https://epurdom.github.io/Stat131A/RSupport/RResources.html
-
 While we give "Exercises", nothing needs to be turned in -- they are just for checking your understanding. Go at your own pace, and only do the exercises if they add to your understanding. 
+Notice the table of contents on the left-hand side. These will allow you to efficiently navigate through the document, and if you click on one, it will open up into more detailed sub-sections.
+
+**Data 8 Students / Python Users** For Data 8 students working in R and R Studio will be new. You will find that the basic concepts from python will transfer over, and you just need to concentrate on figuring out the difference in syntax. For those students who are more familiar with python, there are special notes about how R commands compare to python commands that look like this:
+
+> **_Python Users:_** An example of python note!
+
+If you're coming from STAT 20, you can ignore the comments and code with a green background. 
+
+**Stat 20 Students / R users** For Stat 20 students this will feel very familiar, but some of the programming concepts, like how to write your own function and for-loops may be new. (Data 8 students will be familiar with these concepts, but should focus on the syntax in R). Please *slowly* go over these sections and if you are not clear ask for help in lab or do some outside google searches to find further tutorials on these concepts. 
+
+For additional R support, see https://epurdom.github.io/Stat131A/RSupport/RResources.html
+
 
 # Getting RStudio
 
@@ -26,7 +36,7 @@ RStudio is an open-source Integrated Development Environment (IDE) which provide
 
 We will use the web version for labs, since this makes it easier and quicker to get going during labs -- by clicking on the links to the lab we provide you on bcourses, it will \upload necessary additional files for the lab into your workspace. 
 
-We give brief instructions below for both methods, but for following this lab (and future labs), you should use the web version. For other assignments, you may find it easier to use RStudio on your own computer. 
+We give brief instructions below for both methods, but for following this lab (and future labs), you should use the web version. For other assignments, you may find it easier to use RStudio on your own computer. In fact, we strongly recommend for your own convenience that if you have your own computer you should download and install R and do assignments (other than the labs) on your own machine. 
 
 ## Web Version
 
@@ -41,12 +51,33 @@ The files you see in the lower left corner may look different, but you should se
 
 ## Desktop Version
 
-The layout looks similar to that of the web version.  The installation of R and RStudio is straightforward, just as installing other applications in your computer. We strongly recommend for your own convenience that if you have your own computer, download and install R and do assignments other than the lab on your own machine. 
+The layout looks similar to that of the web version.  The installation of R and RStudio is straightforward, just as installing other applications in your computer. We strongly recommend for your own convenience that if you have your own computer, download and install R and do assignments (other than the labs) on your own machine. 
 
 - To install R on your computer (legally for free!), go to the home website of R [https://cran.r-project.org/](https://cran.r-project.org/) and choose the platform (Mac, Windows or Linux) corresponds to your own divice.
 - After successfully installing R, you can [https://www.rstudio.com/products/rstudio/download3/](https://www.rstudio.com/products/rstudio/download3/) according to your platform. 
 
 # Introduction to RStudio
+
+## Working Directory
+
+Your working directory is the folder on your computer in which you are currently working. When you ask R to open a certain file, it will look in the working directory for this file, and when you tell R to save a data file or figure, it will save it in the working directory. 
+
+Before you start working, please set your working directory to where all your data and script files are or should be stored. You can browse and choose working directory by going to `Session` -> `Set working directory` -> `Choose directory ...` as follows.
+
+![](figures/change_wd.png)
+
+For this lab, change your working directory to where the uploaded lab 00 files should be:
+
+`Stat131Public` -> `lab00`
+
+<img src="figures/wd_after.png" width="272" height="232" />
+
+
+After doing this, you should see that the tab in the lower right marked files should show the files that were automatically imported when you clicked on the link to start this session:
+
+<img src="figures/wd_filesAfter.png" width="356" height="178" />
+
+These are the files you will be using in this lab, and you can create more during this lab (this is your personal working space...)
 
 ## Your first command in the console
 
@@ -75,24 +106,6 @@ To run one line or several line of code in an R script, put your cursor in that 
 
 ![_Create an R script_](figures/new_script.png)
 
-## Working Directory
-
-Your working directory is the folder on your computer in which you are currently working. When you ask R to open a certain file, it will look in the working directory for this file, and when you tell R to save a data file or figure, it will save it in the working directory. 
-
-Before you start working, please set your working directory to where all your data and script files are or should be stored. You can browse and choose working directory by going to `Session` -> `Set working directory` -> `Choose directory ...` as follows.
-
-![](figures/change_wd.png)
-
-Change your working directory to where the uploaded lab 00 files should be:
-
-`Stat131Public` -> `2019Fall` -> `Labs` -> `lab00`
-
-<img src="figures/wd_after.png" width="272" height="232" />
-
-
-After doing this, you should see that the tab in the lower right marked files should show the files that you imported in starting the session
-
-<img src="figures/wd_filesAfter.png" width="356" height="178" />
 
 ## RStudio Layout
 
@@ -153,16 +166,16 @@ R can do many statistical and data analyses. They are organized in packages.
 To get a list of all installed packages, go to the packages window or type `library()` in the console window. If the box in front of the package name is ticked, the package is loaded (activated) and can be used. 
 
 - *To install a package to your computer* For example, if we want to install a package named `ggplot2`,  click install packages in the packages window and type ggplot to search and install. Or you can type `install.packages("ggplot2")` in the console. 
-- *To load a package for use* To use a installed package, you have to load it to you current working environment. You can check box in front of geometry or type `library("geometry")` in the command window.
+- *To load an installed package for current use* Once a package is installed, you have to "load" it to you current working environment in order to be able to actually use it. You can check box in front of geometry or type `library("geometry")` in the command window.
 
-> **_Python Users:_** In python you would bring in modules with the command `import` to bring in other code; packages or libraries are the equivalent idea in R, and the command `library` is like that of `import`. In python, you can also use `import` to bring in arbitrary code that you have created that is saved in a script file (e.g. functions you have written and saved in a `.py` file). In R the `library` command is *only* for bringing in bundled packages, meaning code that has been developed and distributed in a particular format and has been installed into your R. To read in arbitrary code in a script `.R` file you would use the function `source`. 
+> **_Python Users:_** In python you would bring in modules with the command `import` to bring in other code; packages or libraries are the equivalent idea in R, and the command `library` is like that of `import`. A big difference is that in python you can *also* use `import` to bring in arbitrary code that you have written that is saved in a script file (e.g. functions you have written and saved in a `.py` file). In R the `library` command is *only* for bringing in bundled packages; this means mean code that has been developed and distributed in a particular format and has been installed into your R system on your computer. To read in arbitrary code in a script `.R` file you would use the function `source`. 
 
 
 
 
 # Introduction to R Markdown
 
-While R Scripts contains only R code, R Markdown enable us to create dynamic documents with embedded chunks of R code. The document can be converted to other formats such as HTML and PDF to have a "published" version. So you can develop a published report with the code embedded, ensuring that you can always recreate your work (as opposed, for example, to cutting and pasting figures or results into a text editor like Word). 
+While R Scripts contains only R code, R Markdown enable us to create dynamic documents with embedded chunks of R code. Meaning you can write text and also have code that you want to describe in the same document. The R Markdown document can be converted to other formats such as HTML and PDF to have a "published" version. So you can develop a published report with the code embedded within it, ensuring that you can always recreate your work. This is opposed to, for example, cutting and pasting figures or results into a text editor like Word. 
 
 > **_Python Users:_**  The relationship between R Scripts (`*.R`) and R Markdown (`*.Rmd`) is similar to the relationship between Python scripts (`*.py`) and IPython Notebooks (`*.ipynb`). 
 
@@ -174,11 +187,11 @@ You should now have a document which looks like this:
 
 ![](figures/Rmd_initiate.png)
 
-RStudio has already populated the file with example text and code to get you started (which you would obviously delete for a real assignment). The code is contained in "chunks", which start with ` ```{r} ` and end with ` ``` `  (each on their own line):
+RStudio has already populated the file with example text and code to get you started (which you would obviously delete for a real assignment). The code is contained within "chunks", which start with ` ```{r} ` and end with ` ``` `  (each on their own line):
 
 ![](figures/Rmd_default_code_chunk.png)
 
-Extra options can be added in the ` ```{r} `. This code chunk has been given a descriptive name ("cars"), via ` ```{r cars} ` 
+Extra options can be added in the ` ```{r} ` code. In the above example, this code chunk has been given a descriptive name ("cars"), via ` ```{r cars} ` 
 
 To add new code chunks into the document, click in the document where you want the code chunk to go and click add chunk icon ![](figures/add_chunk_icon.png). Try to add a code chunk after the "cars" chunk that is already there. It should look like this
 
@@ -198,7 +211,7 @@ so that it looks like this
 
 ## Running code
 
-If you click on the `run` icon at the top right of the chunk (triangle in chunk), the entire chunk will be run and the output will either show the results below
+If you click on the `run` icon at the top right of the chunk (green triangle), the entire chunk will be run and the output will either show the results below
 
 ![](figures/Rmd_output_belowchunk.png)
 
@@ -208,7 +221,7 @@ or will show them in the console which look like this:
 
 > **_Python Users:_** Beneath the code is similar to how IPython notebooks work
 
-You can change between these two options under the "gear" button):
+You can change between these two options under the "gear" button:
 
 <img src="figures/Rstudio_rchunk_render.png" width="150" height="200" />
 
@@ -220,7 +233,7 @@ Click `Run` and get a drop-down menu about what you want to run (there are simpl
 
 ## Publishing (compiling) your document
 
-To generate an HTML file, click on the icon ![](figures/Rmd_genrate_HTML.png). 
+To generate an HTML file of the entire document, click on the icon ![](figures/Rmd_genrate_HTML.png). 
 
 It should generate the HTML in the same folder as the R Markdown file.
 
@@ -228,11 +241,11 @@ The above code chunk will look as follows in the HTML file:
 
 ![](figures/HTML_outputs.png)
 
-This will run all the commands from the beginning in a fresh environment. You will often discover mistakes when you do this, even if you think you have been testing your code interactively the whole time. Running everything fresh ensures that you have *reproducible* code. 
+Compiling the entire document will run all the commands from the beginning in a fresh environment. You will often discover mistakes when you do this, even if you think you have been testing your code interactively the whole time. Running everything fresh ensures that you have *reproducible* code, meaning someone else can start with just this document and recreate everything you show in your report. 
 
-For example, suppose your code ran fine, you changed something, but didn't hit run. Or if you move a chunk around and don't realize that you moved it *after* another chunk that depends on the results of that chunk -- if you run the chunks in the right order, you won't get an error. But when you compile it, it won't work. 
+For example, suppose your code ran fine, you changed something, but didn't hit run. Or if you move a chunk around and don't realize that you moved it *after* another chunk that depends on the results of that chunk -- if you run the chunks in the right order, you won't get an error. But when you compile it from top to bottom, it won't work. 
 
-You should always give yourself time to test your assignment before the due date, and as you finish one section/question, compile the results and see if you get what you expect rather than waiting until everything is finished.
+You should always give yourself time to test your assignment before the due date. Furthermore, it is wise as you finish one section/question of your assignment to compile the entire document and see if you get what you expect, rather than waiting until you are completely finished.
 
 Please refer to an introduction of [Markdown Basics](http://rmarkdown.rstudio.com/authoring_basics.html) on how to add headers, lists and images on the markdown file and generally formatting your text.  
 
@@ -275,7 +288,7 @@ If you do run the code and hit preview, you'll see the results now show up:
 ![](figures/Rnb_nbhtml_norun_afterrun.png)
 
 
-This can be convenient to be able to see (and save) exactly where you are in terms of what you have tested and run. It is also much quicker than compiling the whole document, if you just want to quickly see how the html (i.e. text) will look at the end. It also allows a preview, even if part of your code isn't finished.
+This can be convenient to be able to see (and save) exactly where you are in terms of what you have tested and run. It is also much quicker than compiling the whole document if you just want to quickly see how the html (i.e. text) will look at the end. It also allows a preview, even if part of your code isn't finished.
 
 **Warning** But it also means that you could have broken code that you haven't run and this preview will not let you know that. 
 
@@ -285,14 +298,16 @@ So while this preview can be handy, you still need to be able to compile it comp
 
 By clicking "Knit to html" (or pdf) you can make sure the entire thing compiles fresh from the beginning (which is what we will do in testing that your code works).
 
+## A Note on This Lab
 
-# Introduction to R language
+This tutorial is compiled from a Rmarkdown document, but is a little bit complicated as an introduction to Rmarkdown because of the screenshots and python comments that we have added. 
 
-This document is compiled from a Rmarkdown, but is a little bit complicated as an introduction to Rmarkdown, because of the screenshots and python comments that we have added. 
-
-In future labs, your labs will be Rmarkdown documents. You will open them up and interact with the code we have given you as part of the lab directly in the Rmarkdown file.  You will turn in your modified Rmarkdown, along with a compiled pdf version as your solution to gradescope. 
+In future labs, your labs will be Rmarkdown documents. You will open them up and interact with the code directly in the Rmarkdown file we have given you as part of the lab.  You will turn in your modified Rmarkdown, along with a compiled pdf version as your solution to gradescope. 
 
 But for this lab (where you do not need to turn in anything), you will need to cut and paste (or type!) the commands from the html version of this lab into your console. 
+
+# Introduction to R language
+In what follows, we will move away from Rmarkdown, and just show you the R code. You can type this directly into the console, or (better!) use the R script document we were working with above. 
 
 ## Assigning values
 Here we do a simple assignment of a number to a variable called `val`:
@@ -318,6 +333,8 @@ print(val)
 Val = 7 # case-sensitive!
 print(Val)
 ```
+
+You can use either one, and you should be comfortable reading code with either one. 
 
 ## Arithmetic Operators
 
@@ -348,9 +365,11 @@ abs(-2)
 5e9 * 1e3
 ```
 
-> **_Python Users:_**  The following would be the corresponding code in python for these arithmetic operations:
+> **_Python Users:_**  The following would be the corresponding code in python for these arithmetic operations: 
 
-```
+
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
+# python code:
 import math
 import numpy as np
 
@@ -369,7 +388,7 @@ print(5000000000 * 1000)
 print(5e9 * 1e3)
 ```
 
-**Exercise 1.** You've seen the probability density function of Normal distribution $N(\mu, \sigma^2)$ in Data8/Stat 20 as follows:
+**Exercise 1.** You've seen the probability density function of Normal distribution $N(\mu, \sigma^2)$ in Data8 or Stat 20 as follows:
 
 $$p(x)=\frac{1}{\sqrt{2\sigma^2\pi}}\exp{-\frac{(x - \mu)^2}{2\sigma^2}}$$
 
@@ -422,14 +441,14 @@ The basic numerical comparisons are `<`, `<=`, `>`, `>=`. To do put together mul
 
 > **_Python Users:_**  The above would be the corresponding code in python for these logical operations:
 
-```
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
 print((1 > 0) and (3 <= 5))
 print((1 < 0) or (3 > 5))
 print((3 == 9/3) or (2 < 1) )
 print(not(2 != 4/3))
 ```
 
-**Exercise 2** We want to use R and the function `dnorm` that evalutates the normal density to answer the following questions. Recall that `dnorm(x,mean=1,sd=2)` is the value of the normal density with mean 1 and standard deviation 2 evaluated at x. 
+**Exercise 2** We want to use R and the function `dnorm` that evaluates the normal density to answer the following questions. Recall that `dnorm(x,mean=1,sd=2)` is the value of the normal density with mean 1 and standard deviation 2 evaluated at x. 
 
 * The density of N(1,2) is larger than the density of N(0,2) at X=0. Assign your TRUE/FALSE answer to variables `result1`.
 * The density of N(1,2) at X=0 is larger than 0.2 and less than 0.3. Assign your TRUE/FALSE answer to variables `result2`.
@@ -439,14 +458,14 @@ mu1 <- 1
 mu2 <- 0
 sig.sq <- 2
 x <- 0
-# Add code 
+# Add code with result saved as `result1`
 
 # uncomment to print annswer
 # print(result1)
 ```
 
 ```{r}
-# Add code 
+# Add code with result saved as `result2`
 
 # uncomment to print annswer
 # print(result2)
@@ -468,7 +487,7 @@ a
 
 > **_Python Users:_**  In python this would be equivalent to:
 
-```
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
 a = [0.125, 4.75, -1.3]
 #Or a numpy array
 a = np.array([0.125, 4.75, -1.3])
@@ -485,7 +504,8 @@ newVector
 ```
 
 > **_Python Users:_**  In python this would be equivalent to
-```
+
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
 a = [0.125, 4.75, -1.3]
 b = [0, 1, -1, math.pi, math.e]
 print([a, b])
@@ -522,7 +542,7 @@ seq2
 
 > **_Python Users:_**  Notice the difference with `np.arange`, where then end value given to `np.arrange` (given by `stop`) is one past the value you want:
 
-```
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
 >>> np.arange(start=4,stop=10,step=1)
  array([4, 5, 6, 7, 8, 9])
 ```
@@ -560,7 +580,7 @@ Let $x=(x_1,x_2,\ldots,x_n$ and $y=(y_1,y_2,\ldots,y_n)$
 Then `x*y` will return the vector
 $$(x_1 y_1, x_2 y_2,\ldots,x_n y_n)$$
 
-> For those that are familiar with vector operations this means that `x*y` for vectors in R is NOT the inner product, but element wise, and ditto for matrices. 
+*Note:* For those that are familiar with vector operations this means that `x*y` for vectors in R is NOT the inner product, but element wise, and ditto for matrices. 
 
 And it's similar for other operators. Look at how these mathematical operations work on vectors:
 
@@ -634,7 +654,7 @@ vector1[-1]
 
 > **_Python Users:_**  Python uses negative indexing differently. For example, `somevector[-1]` refers to the *last* element of the vector. However, negative index in R returns the vector with indicated elements DELETED. In python the R code above would be give the last element, not delete the first one:
 
-```
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
 >>> vector1[-1]
 10
 ```
@@ -1166,7 +1186,7 @@ nothing()
 
 > **_Python Users:_**  The same function in python would be defined as:
 
-```
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
 def nothing():
     x = 4
     return x
@@ -1250,7 +1270,8 @@ for(animal in c('cat', 'dog', 'rabbit')){
 ```
 
 > **_Python Users:_**  This for-loop in python would be defined as:
-```
+
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
 for animal in make_array('cat', 'dog', 'rabbit'):
     print(animal)
 ```
@@ -1272,7 +1293,7 @@ print(prod_10)
 ```
 
 > **_Python Users:_**  This for-loop in python would be defined as:
-```
+```{python class.source="bg-success", eval=FALSE,python.reticulate=FALSE}
 sum_10 = 0
 prod_10 = 1
 for i in range(1,11):
