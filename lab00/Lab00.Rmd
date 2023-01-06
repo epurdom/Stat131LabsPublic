@@ -1,7 +1,7 @@
 ---
 title: "Lab 0"
 author: "STAT 131A"
-date: "January 21, 2020"
+date: "January 6, 2023"
 output:
   html_document: 
     toc: true
@@ -14,9 +14,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This lab is expected to be self-paced and make sure that everyone is familiar with R and RStudio. This is a *long* lab, but we expect that for everyone, parts of this will be review and parts will be new. All of these concepts will continue to be reinforced in future labs.
 
-In particular, for Data 8 students, working in R and R Studio will be new. For those students, who are more familiar with python, there are special notes about how R commands compare to python commands (if you're coming from STAT 20, you can ignore these comments). You will find that the basic concepts from python will transfer over, and you just need to concentrate on figuring out the difference in syntax.
+In particular, for Data 8 students working in R and R Studio will be new. For those students, who are more familiar with python, there are special notes about how R commands compare to python commands (if you're coming from STAT 20, you can ignore these comments). You will find that the basic concepts from python will transfer over, and you just need to concentrate on figuring out the difference in syntax.
 
-For Stat 20 students this will feel very familiar, but some of the programming concepts, like how to write your own function and for-loops will be new. (Data 8 students will be familiar with these concepts, but should focus on the syntax in R). Please *slowly* go over these sections and if you are not clear ask for help in lab or do some outside google searches to find further tutorials on these concepts. 
+For Stat 20 students this will feel very familiar, but some of the programming concepts, like how to write your own function and for-loops may be new. (Data 8 students will be familiar with these concepts, but should focus on the syntax in R). Please *slowly* go over these sections and if you are not clear ask for help in lab or do some outside google searches to find further tutorials on these concepts. For additional R support, see https://epurdom.github.io/Stat131A/RSupport/RResources.html
 
 While we give "Exercises", nothing needs to be turned in -- they are just for checking your understanding. Go at your own pace, and only do the exercises if they add to your understanding. 
 
@@ -24,9 +24,9 @@ While we give "Exercises", nothing needs to be turned in -- they are just for ch
 
 RStudio is an open-source Integrated Development Environment (IDE) which provides many user-friendly features. We will use RStudio throughout the rest of the course. RStudio can be started from the desktop (i.e. your computer) or through logging into a website and accessing a web server. The user interface is generally the same for the two. 
 
-We will use the web version for labs, since this makes it easier and quicker to get going during labs. Moreover, by clicking on the links we provide you, it will also upload necessary additional files for the lab into your workspace. 
+We will use the web version for labs, since this makes it easier and quicker to get going during labs -- by clicking on the links to the lab we provide you on bcourses, it will \upload necessary additional files for the lab into your workspace. 
 
-We give brief instructions below for both methods, but for following this lab (and future labs), you should use the web version. 
+We give brief instructions below for both methods, but for following this lab (and future labs), you should use the web version. For other assignments, you may find it easier to use RStudio on your own computer. 
 
 ## Web Version
 
@@ -37,8 +37,7 @@ A RStudio server can be accessed via a web browser for this class. All the data 
 To login in to the server, open the url for this lab [here](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fepurdom%2FStat131Public&urlpath=rstudio). Once successfully authenticated, you will see the following RStudio interface. 
 
 ![_A screen shot of Rstudio on initial startup_](figures/RStudio.png)
-
-The links we give you for lab also upload files necessary for completion of the lab (e.g. data files, code files, etc.). 
+The files you see in the lower left corner may look different, but you should see the folder "Stat131LabsPublic". This will be where the necessary files for the lab will be located (e.g. data files, code files, etc.). We will explore this more below.
 
 ## Desktop Version
 
