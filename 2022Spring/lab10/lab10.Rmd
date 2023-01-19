@@ -1,0 +1,332 @@
+---
+title: "Lab 10"
+author: "Stat C131A"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 6)
+knitr::opts_chunk$set(fig.height = 4)
+```
+
+In this lab, we will learn about PCA and review heatmap and `ggplot`.
+
+
+# A review of `ggplot`
+
+`ggplot` is probably the most widely used plotting package in `R`. It creates publication-quality graphics with much cleaner and explicit arguments (compare to functions in the base package). It is especially user-friendly when dealing with data with categorical variables. `ggplot` allows you to create plots layer by layer, making it possible to create sophisticated plots.
+
+In this section, we will create several plots using `ggplot` with our familiar craigslist dataset. These are very simple examples of what `ggplot` can do. If you are interested, you can refer to the documentation for `ggplot`(http://docs.ggplot2.org/current/). 
+
+```{r}
+library(ggplot2)
+craigslist <- read.csv("craigslist.csv")
+craigslist <- craigslist[-which(craigslist$size >= 30000), ]
+```
+
+## Example 1: boxplot and violin plots
+
+First, we create a plot using `ggplot()`. 
+
+```{r}
+p <- ggplot(
+	craigslist, # specify the data frame
+	aes(x = location, # variable in the x-axis, a categorical variable in craigslist
+			y = price)) # variable in the y-axis, a continuous variable in craigslist
+```
+
+This first step initializes the plot. If you print `p`, you will see nothing other than the axis and the grid! This is because you haven't told `ggplot` what to plot.
+
+```{r}
+p
+```
+
+Once you initialized a plot, you are now able to add layers using various `geom`s. For example, to add boxplots to `p`, we use `geom_boxplot()`.
+
+```{r}
+p + geom_boxplot()
+```
+
+To add violin plots to `p`, we would use `geom_violin()`.
+
+```{r}
+p + geom_violin()
+```
+
+You can specify the fill color using the `fill` argument; `ggplot` will automatically create the legend for you.
+
+```{r}
+p + geom_violin(aes(fill = location))
+```
+
+`ggplot` makes life easier when there are multiple categories.
+
+```{r, fig.width=8, fig.height=5}
+p + geom_boxplot(aes(fill = location)) +
+	facet_grid(.~brs) + # use facet by number of bedrooms
+	# you can do facet_grid(brs~.) as well, which gives you 4 rows of plots instead of 4 columns
+	theme(axis.text.x = element_text(angle = 90, hjust = 1)) # rotate the x labels
+```
+
+
+## Example 2: histogram and density plots
+
+In histograms and density plots, the variable on the horizontal axis is from the data frame and that on the vertical axis is the counts or density. In such cases, we only need to specify argument `x` of `aes()` when initializing a plot with `ggplot`
+
+```{r}
+p2 <- ggplot(craigslist, 
+             aes(x = price))
+```
+
+To add a histogram to `p2`, we would use `geom_histogram()`.
+
+```{r}
+# A frequency histogram with the default bin width.
+p2 + geom_histogram()
+```
+
+```{r}
+# A frequency histogram with bin width equal to 100
+p2 + geom_histogram(binwidth = 100)
+```
+
+To add a density plot to `p2`, we would use `geom_density()`.
+
+```{r}
+p2 + geom_density()
+```
+
+We could also plot densities by group.
+
+```{r}
+p2 + geom_density(aes(colour = location))
+```
+
+## Example 3: scatter plot and smooth curves
+
+As usual, we initialize our plot by setting `x = size` and `y = price`.
+
+```{r}
+p3 <- ggplot(craigslist, aes(x = size, y= price))
+```
+
+Add a scatter plot layer. There are missing values in the variable `size`. `ggplot` will ignore rows with missing values, but may print a warning.
+
+```{r}
+p3 + geom_point()
+```
+
+Add a smoothed fit layer.
+
+```{r}
+p3 + geom_point() + geom_smooth()
+```
+
+Plot the curve by group.
+
+```{r}
+p3 + geom_point(aes(colour=location)) + geom_smooth(aes(colour=location))
+```
+
+**Exercise 1**
+
+Draw the scatter plot and smooth curve. Use `facet_grid()` to group by location. Arrange these plots so that they are plotted side by side. Leave the points black and color the smooth curve by group using the `location` variable.
+
+```{r, fig.width=9}
+
+```
+
+
+## Example 4: organize multiple plots in one single plot
+
+One equivalence of `par(mfrow) = c(, )` in `ggplot` is `grid.arrange()` function in the package `gridExtra`.
+
+```{r}
+library(gridExtra)
+grid.arrange(p2 + geom_histogram() + ggtitle("Histogram"),
+             p2 + geom_density() + ggtitle("Density plot"),
+             p3 + geom_point() + ggtitle("Scatter plot"),
+             p3 + geom_point() + geom_smooth() + ggtitle("Scatter plot with smooth curve"),
+             nrow = 2, ncol = 2, # plot 2 by 2 grid
+             top = "Examples for organizing  plots")
+```
+
+
+
+- Reference: [Build a plot layer by layer](https://rpubs.com/hadley/ggplot2-layers)
+
+# Heatmap
+```{r}
+library(pheatmap)
+breast_origin<-read.csv("highVarBreast.csv",stringsAsFactors=TRUE)
+
+subset.id <- sample(1:nrow(breast_origin), 200, replace = F)
+## ----corBreastNoCluster,out.width=doubleWidth,message=FALSE, warning=FALSE----
+breast <- breast_origin[subset.id, ]
+corMat<-cor(breast[,-c(1:7)]) ### removing the factor variables
+
+## ----corBreastClustered,out.width=doubleWidth---------------------------------
+pheatmap(corMat,cluster_rows = TRUE, cluster_cols = TRUE, 
+         treeheight_row =0, treeheight_col = 0)
+
+
+## ----breastHeatmap,out.width=doubleWidth--------------------------------------
+pheatmap(breast[,-c(1:7)],cluster_rows = TRUE, 
+         cluster_cols = TRUE, treeheight_row =0, treeheight_col = 0)
+
+## ----breastHeatmapFixedUp,out.width=doubleWidth-------------------------------
+typeCol<-c("red","black","yellow")
+names(typeCol)<-levels(breast$TypeSample)
+estCol<-palette()[c(4,3,5)] ##designates a list of 3 particular colors
+names(estCol)<-levels(breast$EstReceptor)
+proCol<-palette()[5:7]
+names(proCol)<-levels(breast$Progesteron)
+## now get the 1st and 99th percentiles for the data
+qnt<-quantile(as.numeric(data.matrix((breast[,-c(1:7)]))),c(0.01,.99))
+brks<-seq(qnt[1],qnt[2],length=20)
+head(brks)
+seqPal5<-colorRampPalette(c("black","navyblue",
+            "mediumblue","dodgerblue3","aquamarine4","green4","yellowgreen",
+            "yellow"))(length(brks)-1)
+row.names(breast)<-c(1:nrow(breast))
+fullHeat<-pheatmap(breast[,-c(1:7)],cluster_rows = TRUE, cluster_cols = TRUE, 
+                   treeheight_row =0, treeheight_col = 0,
+                   color=seqPal5,
+                   breaks=brks,
+                   annotation_row=breast[,5:7],
+                   annotation_colors = list("TypeSample"=typeCol,
+                            "EstReceptor"=estCol,"Progesteron"=proCol))
+
+## ----breastHeatmapOnlyCancer,out.width=doubleWidth----------------------------
+whCancer<-which(breast$Type!="Normal")
+pheatmap(breast[whCancer,-c(1:7)],cluster_rows = TRUE, cluster_cols = TRUE, 
+         treeheight_row =0, treeheight_col = 0,
+         color=seqPal5,
+         breaks=brks,
+         annotation_row=breast[whCancer,5:7],
+         annotation_colors = list("TypeSample"=typeCol,
+                                  "EstReceptor"=estCol,"Progesteron"=proCol))
+
+
+## ----breastHeatmapCentered,out.width=doubleWidth------------------------------
+breastCenteredMean<-scale(breast[,-c(1:7)],center=TRUE,scale=FALSE)
+colMedian<-apply(breast[,-c(1:7)],2,median)
+## subtract its col median from every col value, using sweep()
+breastCenteredMed<-sweep(breast[,-c(1:7)],MARGIN=2, colMedian,"-") 
+qnt<-max(abs(quantile(as.numeric(data.matrix((breastCenteredMed[,-c(1:7)]))),
+                      c(0.01,.99))))
+brksCentered<-seq(-qnt,qnt,length=50)
+seqPal2<- colorRampPalette(c("orange","black","blue"))(length(brksCentered)-1)
+seqPal2<-(c("yellow","gold2",seqPal2))
+seqPal2<-rev(seqPal2)
+pheatmap(breastCenteredMed[whCancer,-c(1:7)],cluster_rows = TRUE, cluster_cols = TRUE, 
+         treeheight_row =0, treeheight_col = 0,
+         color=seqPal2,
+         breaks=brksCentered,
+         annotation_row=breast[whCancer,6:7],
+         annotation_colors = list("TypeSample"=typeCol,
+                                  "EstReceptor"=estCol,"Progesteron"=proCol))
+
+
+
+## ----breastHeatmapWithTree,out.width=doubleWidth------------------------------
+smallBreast<-read.csv("smallVarBreast.csv",
+                      header=TRUE,stringsAsFactors=TRUE)
+row.names(smallBreast)<-1:nrow(smallBreast)
+pheatmap(smallBreast[,-c(1:7)],cluster_rows = TRUE, 
+         cluster_cols = FALSE,  treeheight_col = 0,
+         breaks=brks,col=seqPal5)
+
+pheatmap(smallBreast[,-c(1:7)],cluster_rows = TRUE, 
+         cluster_cols = TRUE,  treeheight_col = 0,
+         breaks=brks,col=seqPal5)
+
+pheatmap(smallBreast[,-c(1:7)],cluster_rows = TRUE, cluster_cols = TRUE, 
+         breaks=brks,col=seqPal5,
+         annotation_row=smallBreast[,5:7],
+         annotation_colors=list("TypeSample"=typeCol,
+                                "EstReceptor"=estCol,"Progesteron"=proCol))
+```
+# Places rated dataset
+
+The data were taken from the _Places Rated Almanac_ which rates cities according to nine criteria. For all but two of the criteria, the higher the score, the better. For Housing and Crime, the lower the score the better. The following are descriptions of the criteria:
+
+- Climate & Terrain: very hot and very cold months, seasonal temperature variation, heating- and cooling-degree days, freezing days, zero-degree days, ninety-degree days.
+- Housing: utility bills, property taxes, mortgage payments.
+- Health Care & Environment: per capita physicians, teaching hospitals, medical schools, cardiac rehabilitation centers, comprehensive cancer treatment centers, hospices, insurance/hospitalization costs index, flouridation of drinking water, air pollution.
+- Crime: violent crime rate, property crime rate.
+- Transportation: daily commute, public transportation, Interstate highways, air service, passenger rail service.
+- Education: pupil/teacher ratio in the public K-12 system, effort index in K-12, accademic options in higher education.
+- The Arts: museums, fine arts and public radio stations, public television stations, universities offering a degree or degrees in the arts, symphony orchestras, theatres, opera companies, dance companies, public libraries.
+- Recreation: good restaurants, public golf courses, certified lanes for tenpin bowling, movie theatres, zoos, aquariums, family theme parks, sanctioned automobile race tracks, pari-mutuel betting attractions, major- and minor- league professional sports teams, NCAA Division I football and basketball teams, miles of ocean or Great Lakes coastline, inland water, national forests, national parks, or national wildlife refuges, Consolidated Metropolitan Statistical Area access.
+- Economics: average household income adjusted for taxes and living costs, income growth, job growth.
+
+Read Data.
+
+```{r}
+place_rated <- read.csv("place.csv", stringsAsFactors = FALSE)
+place_rated[, 1:9] <- scale(place_rated[, 1:9])
+CA_NY_cities <- which(place_rated$state %in% c("CA", "NY"))
+example_cities <- CA_NY_cities[c(10, 13, 15, 22, 24, 25, 26)]
+row.names(place_rated) <- paste0(place_rated$city, place_rated$state)
+```
+
+
+## Principal components analysis
+
+**Exercise 2**
+
+Principal components analysis allows you to convert a set of correlated variables into a set of linearly uncorrelated principal components. Each principal component is a linear combination of the original variables. The first principal component has the largest variance and the last principal component the least. You can think that the first principal component carries most information of the data (explains the largest proportion of data variance). That is why we usually use the first and the second PC to do visualization.
+
+(a) Run PCA on the nine rating criteria using the `prcomp()` function. Save the result to `place.pca`.
+
+```{r ex2a}
+# insert your code here to run pca,
+# save your result as `place.pca`
+
+# place.pca <- 
+```
+
+(b) Create a scatter plot of the first principal component versus the second principal component. 
+
+_Hint._ Similar to `lm`, `prcomp` gives you a list of objects. They are `sdev`, `rotation`, `center`, `scale` and `x`. You can access them using the dollar sign `$`. For now, you do not need to worry about what they are except `x`, which gives you a matrix with 9 columns (PCs).
+
+```{r ex2b1}
+# insert your code here for the scatter plot
+
+```
+
+For this data, we may not be able to observe separation of groups when plotting the first two PCs. However, there is more information we can examine by using the `biplot()` function. Besides creating scatter plots between PCs, the `biplot()` function also plots the weights of the linear combinations (loadings) when calculating principal components. We marked several cities in the output as follows.
+
+```{r ex2b2}
+# # Uncomment the code below after you get `place.pca`
+# text_names = place_rated$city
+# text_names[-example_cities] = 'o'
+# biplot(place.pca, cex = 0.5, xlabs = text_names, xlim = c(-0.15, 0.4), ylim = c(-0.2, 0.2))
+```
+
+
+(c) Use `summary` function on your `place.pca` object. How many PCs will you choose in order to explain at least 80% of the data variance?
+
+```{r ex2c1}
+# insert your code here to summary your PCs
+
+```
+
+```{r ex2c2}
+# How many PCs will you choose in order to explain at least 80% of the data variance?
+# Please uncomment your answer
+# nPC <- 2
+# nPC <- 4
+# nPC <- 5
+# nPC <- 8
+```
+
+
+(d) We can plot the scree plot or elbow plot simply by using the `plot()` function on our PCA object.
+
+```{r ex2d}
+
+```
+

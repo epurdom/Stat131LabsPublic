@@ -1,0 +1,204 @@
+---
+title: "Lab 13: Variable Selection and Logistic Regression"
+subtitle: "Stat 131A "
+date: "April 25, 2022"
+output: pdf_document
+header-includes:
+- \usepackage{framed}
+- \usepackage{xcolor}
+- \let\oldquote=\quote
+- \let\endoldquote=\endquote
+- \renewenvironment{quote}{\begin{minipage}{\linewidth}\colorlet{shadecolor}{orange!15}\begin{snugshade}}{\end{snugshade}\end{minipage}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to the Lab 13! In the first part, we will apply variable selection techniques to find the best subset of covariates to predict the red wine quality using physicochemical tests scores such as citric acid, pH, etc.
+
+The dataset we will be using is related to red variants of the Portuguese _vinho verde_ wine. There are 1599 samples available in the dataset. Due to privacy and logistic issues, only physicochemical (inputs) and sensory (the output) variables are available (e.g. there is no data about grape types, wine brand, wine selling price, etc.). 
+
+The explanatory variables are all continuous variables and based on physicochemical tests:
+
+- **fixed acidity**
+- **volatile acidity**
+- **citric acid**
+- **residual sugar**
+- **chlorides**
+- **free sulfur dioxide**
+- **total sulfur dioxide**
+- **density**
+- **pH**
+- **sulphates**
+- **alcohol**
+
+The response variable is the **quality** score between 0 and 10 (based on sensory data).
+
+We randomly split the data into two parts-the `wine` dataset with 1199 samples and the `wine.test` dataset with 400 samples. Splitting the dataset is a common technique when we want to evaluate the model performance. There are training set, validation set, and test set. The validation set is used for model selection. That is, to estimate the performance of the different model in order to choose the best one. The test set is used for estimating the performance of our final model.
+
+```{r}
+set.seed(20170413)
+wine.dataset <- read.csv("winequality-red.csv", sep = ";")
+test.samples <- sample(1:nrow(wine.dataset), 400)
+wine <- wine.dataset[-test.samples, ]
+wine.test <- wine.dataset[test.samples, ]
+```
+
+We now fit a linear regression using all of the explanatory variables:
+
+```{r}
+wine.fit <- lm(quality ~. ,data = na.omit(wine))
+summary(wine.fit)
+```
+
+## Exercise 1: Backward elimination based on p-values
+
+We start with our full model `wine.fit`.
+
+(a) Remove the term corresponding to the coefficient estimate with the highest p-value in the full model. Print the summary of your updated model.
+
+```{r}
+# Insert your code here and save your updated model as `wine.backward`
+# wine.backward <- 
+# summary(wine.backward)
+
+```
+
+
+(b) In `R`, there are functions which automatically perform variable selection. The `step()` function uses AIC, which is very similar to RSS but also takes the number of explanatory variables into account. For example, to do backward elimination starting with our full model:
+
+```{r}
+step(wine.fit, direction = "backward")
+```
+
+Now try to understand the output of `step()` function. Which variables were omitted from the final model? Provide a list of those variables in order of their elimination, and write the final model.
+
+> Variables eliminated (in order):
+
+> Final model:
+
+(c) Start from the model with only intercept term. Use the `step()` function to perform forward selection. Write the variables added in order of their addition and the final model.\
+_Hint._ (a) Use the `scope` argument in step function. (b) Use `formula()` function to get the formula of your full model.
+
+```{r}
+# Insert your code here
+
+```
+
+> Variables added (in order):
+
+
+> Final model:
+
+## Exercise 2: Regression on all subsets of variables
+
+To find the optimal subset of a certain number of variables for a regression, and to compare between different numbers of variables, use the `regsubsets()` function in the `leaps` package.
+
+```{r}
+require(leaps)
+regsub_out <- regsubsets(x = wine[, -12], y = wine[, 12])
+
+```
+
+The default maximum subset size is `nvmax = 8`.
+
+```{r}
+coef(regsub_out, 7)
+```
+
+Optimal subsets of each size are chosen by RSS. To compare models with different subset sizes, use AIC.
+
+```{r}
+coef(regsub_out, 1:3)
+```
+
+What is the best model using 1 variable? Using 7? Is the optimal model of 7 covariates the same as that found in exercise 1?
+
+> Answer here
+
+
+## Exercise 3: Compare performance using test set
+
+Use the test set to assess the performance of the models resulting from forward stepwise selection and the full model. What is the test set root mean square error for the two models?
+
+```{r}
+
+```
+
+> Answer here
+
+# Logistic regression: customer retention
+
+A telecommunications company is concerned about the number of customers leaving their landline business for cable competitors. They need to understand who is leaving. Imagine that you’re an analyst at this company and you have to find out who is leaving and why.
+
+We will use data from [IBM Watson Analytics](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/) to predict customer retention. Analysis of relevant customer data can lead to the design of focused customer retention programs.
+
+The data includes:
+
+- Customers who left within the last month (column `Churn`)
+- Services that each customer has signed up for – phone, multiple lines, internet, online security, online backup, device protection, tech support, and streaming TV and movies
+- Customer account information – how long they’ve been a customer, contract, payment method, paperless billing, monthly charges, and total charges
+- Demographic info about customers – gender, age range, and if they have partners and dependents
+
+```{r}
+set.seed(131)
+retention <- read.csv("customer_retention.csv", stringsAsFactors = FALSE)
+retention$SeniorCitizen <- factor(retention$SeniorCitizen, 0:1, c("No", "Yes"))
+retention <- retention[with(
+	retention, MultipleLines != "No phone service" &
+		OnlineSecurity != "No internet service"), ]
+retention$Churn <- as.numeric(factor(retention$Churn, c("No", "Yes"))) - 1
+retention$PhoneService = NULL
+retention$PaymentMethod = factor(retention$PaymentMethod)
+retention <- retention[, -which(names(retention) %in% c("customerID", "PhoneService"))]
+
+test.set <- sample(nrow(retention), 500)
+retention.test <- retention[test.set, ]
+retention <- retention[-test.set, ]
+```
+
+## Exercise 4
+
+(a) Fit a logistic regression for `Churn` given all other variables in the dataset.
+
+```{r}
+# insert your code here to fit a logistic regression.
+```
+
+(b) There are four payment methods available for customers. 
+
+```{r}
+levels(retention$PaymentMethod)
+```
+
+While holding other predictors in the model constant, which payment method category is associated with the largest retention probability? Uncomment your answer below (ctrl-shift-c/cmd-shift-c).
+
+<!-- > Bank transfer (automatic) -->
+<!-- > Credit card (automatic) -->
+<!-- > Electronic check -->
+<!-- > Mailed check  -->
+
+Which payment method category is associated with the smallest retention probability? Uncomment your answer below (ctrl-shift-c/cmd-shift-c).
+
+<!-- > Bank transfer (automatic) -->
+<!-- > Credit card (automatic) -->
+<!-- > Electronic check        -->
+<!-- > Mailed check  -->
+
+What is the probability difference comparing the payment method category with largest retention probability to that with the smallest? Uncomment your answer below (ctrl-shift-c/cmd-shift-c).
+
+<!-- > A. 0.3487375 -->
+<!-- > B. -0.3487375 -->
+<!-- > C. 0.0187330 -->
+<!-- > D. -0.0187330 -->
+<!-- > E. Not enough information for calculating the difference. -->
+
+(c) Using your fitted model, generate predictions on the test set `retention.test`. What is the test set prediction accuracy (ie the proportion you got right)?\
+_Hint._ Use the `predict()` function with argument `type = "response"` to get the predicted probabilities. When the probability is larger than 0.5, our prediction is 1.
+
+```{r}
+# Insert your code here
+```
+
+> Answer here

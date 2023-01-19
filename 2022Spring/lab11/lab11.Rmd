@@ -1,0 +1,259 @@
+---
+title: "Lab 11"
+author: "Stat C131A"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+knitr::opts_chunk$set(fig.width = 6)
+knitr::opts_chunk$set(fig.height = 4)
+library(tidyverse)
+```
+
+In this lab, we will learn about PCA, `ggbiplot`, `coplot` and multiple regression.
+
+## A simple PCA example
+
+This is a simple example for PCA from [R Bloggers](https://www.r-bloggers.com/computing-and-visualizing-pca-in-r/). The iris dataset is perhaps the best known dataset for classification. The data set contains 3 classes of 50 instances each, where each class refers to a type of iris plant. 
+
+
+```{r}
+# Load data
+data(iris)
+head(iris, 3)
+```
+
+There are five variables in the dataset `iris`, where `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width` are continuous and `Species` is categorical.
+
+```{r}
+names(iris)
+```
+
+
+
+### Excercise 1: PCA on the iris dataset
+
+(a) Apply PCA to the four continuous variables. Be sure to transform these variables by taking the log and then converting those log values to standard units. __Note.__ The centering and scaling may be done by the user or by changing the arguments of `prcomp()`. See the manual page `?prcomp()` for details.
+
+```{r}
+# log transform on the four continuous variable
+# log.ir <- 
+# the Species variable
+# ir.species <- 
+ 
+# Apply PCA
+# center and scale is used to standardize the variables prior to the application of PCA.
+# iris.pca <- 
+```
+
+(b) Create a scatter plot of the transformed data projected onto PC1 and PC2 with PC2 on the vertical axis and PC1 on the horizontal axis. Color the points on the scatter plot by species. Use `ggbiplot` to plot the weights of the linear combinations (loadings) when calculating principal components. 
+
+```{r}
+# Uncomment the following two lines to install "ggbiplot"
+# library(devtools)
+# install_github("vqv/ggbiplot")
+```
+
+```{r,warning=FALSE, message=FALSE}
+library(ggbiplot)
+# insert your code here
+
+```
+
+(c) Interpret the lines in the biplot: what to the lengths and directions tell you?
+
+- The red arrows are vectors where the horizontal direction is given by the loading in PC1, and the vertical direction is given by the loading in PC2
+- The loadings are the covariances between the original variable and the PC
+- They may also be thought of as the coefficients on the centered and scaled components to be used in the prediction of the original variables.
+-If arrows point close together, then they contribute similarly to the PCs, and can be summarized in a lower dimension
+
+
+Now, lets add a few missing values to the data.
+
+```{r}
+iris2 <- iris
+iris2[2,3] <- NA
+iris2[5,2] <- NA
+iris2[10,1] <- NA
+
+# What species are missing?
+# insert your code here
+
+```
+
+
+(d) Apply PCA as before, but make change to code to omit rows with missing values.
+
+```{r}
+# Do PCA, but on iris2, the data with missing values
+
+```
+
+(e) Project the full data (no missing values) onto the principal components space computed from the data with missingness. Create a scatter plot of the full data projected onto the space formed by PC1 and PC2 (as calculated from the data with missingness). Can you identify the species corresponding to the rows with missing data?
+
+```{r}
+# Uncomment certain lines after finishing part(a)&(c)
+# insert your code here
+
+# Rotate data by doing the matrix multiplication
+# dimensions: (150 x 4) x (4 x 4)
+# iris.rot <- scale(log(as.matrix(iris[,1:4]))) %*% iris2.pca$rotation
+
+# Copy vector of species labels where we can have Missing as a label
+# ir.species_with_missing <- factor(ir.species, levels = c(levels(ir.species), "Missing"))
+
+# Add missing label
+# ir.species_with_missing[!complete.cases(iris2)] <- "Missing"
+
+# Plot
+
+
+```
+
+### Exercise 2: Conditioning plots on iris
+Explore the relationship between `Petal.Length` and `Petal.Width`. 
+
+```{r}
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width))+ 
+  geom_point(aes(col = Species)) +
+  geom_smooth(method = "loess")
+pairs(iris)
+ggplot(iris) + 
+  geom_point(aes(x = Sepal.Length, y = Petal.Length, col = Species))
+```
+
+(a) Create a conditioning plot to visualize how `Petal.Length` and `Petal.Width` vary with `Sepal.Width`. 
+
+```{r}
+# insert your code here
+
+
+```
+
+# Multiple regression with diamond price data
+
+This is a very large data set showing various factors of over 50,000 diamonds including price, cut, color, clarity, etc. We are interested in diamond price `price` and how different factors influence it.
+
+| Variable   | Description                                           |
+| :--------  | :---------------------------------------------------- |
+| **price**  | price in US dollars (\$326–\$18,823)                  |
+| **carat**  | weight of the diamond (0.2–5.01)                      |
+| **cut**    | quality of the cut (Fair, Good, Very Good, Premium, Ideal) |
+| **color**  | diamond colour, from J (worst) to D (best)            |
+| **clarity**  | how clear the diamond is (I1 (worst), SI1, SI2, VS1, VS2, VVS1, VVS2, IF (best)) |
+| **length.in.mm** | length in mm (0–10.74)                          |
+| **width.of.mm** | width in mm (0–58.9)                             |
+| **depth.in.mm** | depth in mm (0–31.8)                             |
+| **depth**  | total depth percentage $ = z / mean(x, y) = 2 * z / (x+ y) (43–79)$ |
+| **table**  | width of top of diamond relative to widest point (43–95) |
+
+
+
+
+```{r}
+diamonds <- read.csv("diamonds.csv")
+head(diamonds)
+```
+
+### Exploratory Data Analysis before Regression
+
+First, to better understand the relationships between the variables, we will generate scatter plots. Create scatter plots between the response variable (`price`) and all the continuous variables. The function `is.numeric()` might be helpful to check whether a variable is numeric. For example:
+
+```{r}
+vec1 = 1:10
+vec2 = as.character(1:10)
+vec1
+vec2
+# The following line of code would return TRUE
+is.numeric(vec1)
+# The following line of code would return FALSE
+is.numeric(vec2)
+# The following line of code would return TRUE
+is.character(vec2)
+```
+
+The function `which()` can help you to locate the column indices of the numeric vectors. (In fact, function `which()` is a super useful function in `R`.)
+
+```{r}
+# function `which` give the TRUE indices of a logical object
+which(c(TRUE, FALSE, TRUE, FALSE, TRUE))
+```
+
+```{r, fig.width=6.1, fig.height=6}
+# Insert your code here, use for loop to loop through each numerical variable
+diamonds %>% select(where(is.numeric)) -> diamonds.select
+apply(cbind(combn(1:7, 2),
+						combn(7:1, 2)), 2,  function(x) {
+		pair <- diamonds.select[,x]
+		pair$x.name <- names(pair)[1]
+		pair$y.name <- names(pair)[2]
+		names(pair)[1:2] <- c("x", "y")
+		return(pair[sample(1:nrow(pair), 5000),])
+	}
+) %>% do.call(rbind, .) -> diamonds.pairs
+
+
+diamonds.pairs %>% ggplot(
+	aes(x = x, y = y)
+) + geom_point(size = 0.01, shape = 1, alpha = 0.2) +
+	facet_grid(y.name ~ x.name, scales = "free") +
+	theme_bw() + theme(axis.title = element_blank())
+```
+
+## Multiple regression with continuous variable
+
+### Exercise 3 Fit the model and Calculate the Statistics
+
+(a) Fit a linear model to price with all the continuous variables as explanatory variables. Print the summary of your model. 
+```{r}
+# Insert you code here, save your model as `fit`
+
+```
+
+(b) Calculate the fitted values.
+```{r}
+# Insert you code here, save your results as `fitted.value`
+
+```
+
+(c) Calculate the residuals, the residual sum of squares (RSS), and the total sum of squares (TSS) using the `fitted.value()` from the above chunk.
+```{r}
+# Insert you code here
+# RSS <-
+# TSS <-
+```
+
+(d) Calculate the R-square ($R^2$) using RSS and TSS. What is the interpretation of $R^2$?
+```{r}
+# Insert you code here, save your results as `Rsq`
+# Rsq <-
+```
+### Exercise 4 Think deeper. Is the model reasonable?
+
+(a) Using the fitted model, we can write the estimated model formula. How do we interpret this equation? _Hint._ Use `summary()` on the model object.
+
+```{Answer}
+# Insert your answer
+
+```
+
+
+
+By looking at the $p$-values, we know that the coefficients we estimated are significant except for that of `depth.in.mm`. Take `length.in.mm` for example, the coefficient $-1315.668$ tells us that for a unit increase in `length.in.mm` is associated with a reduction in price of $1315.67 dollars on average. 
+
+Isn't that weird? Fit another multivariate model, but this time, drop `length.in.mm`, `width.of.mm` and `depth.in.mm`? Is that a good idea? _Hint._ Check the correlation between `length.in.mm`, `width.of.mm`,  `depth.in.mm` and `carat`.
+
+```{r}
+# insert your code here
+
+```
+
+(b) Plot the residuals from the restricted model from part (a) against the variables and calculate their correlations. Can you find any problem in your model by looking at these scatter plots? If you're asked to add some terms to improve the model, what will you do? (_Hint._ Consider the scatter plot in Exercise 1: are the relationships linear?)
+```{r, fig.height=5, fig.width=3.5}
+# insert your code here
+
+```
+
+
+
