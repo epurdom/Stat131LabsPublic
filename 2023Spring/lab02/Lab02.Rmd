@@ -16,7 +16,7 @@ library(ggplot2)
 Welcome to the lab 2! In this lab, you will
 
 1) review probability; 
-2) Plot density curve estimates;
+2) review normal distributions 
 3) Obtain some basic statistics by groups;
 
 
@@ -232,151 +232,70 @@ rnorm(5, mean = 0, sd = 1)
 ```
 
 
-
-## Kernel Density estimates
-
-The function `density` will estimate a kernel density from the input data. Below, I calculate the density for the size of the apartments. It does not accept NA values, so I will use the function `na.omit` to get a vector of values excluding the NA's (though just excluding this data might give suspect conclusions!)
-
-```{r}
-d <- density(na.omit(craigslist$size))
-plot(d,col="blue", main="Kernel Density Estimate of apartment sizes")
-```
-
-Notice that the object `d` this creates is a complicated object. I can call `plot` on it, and it creates a reasonable plot because there is a built in plotting function that is triggered by calling plot on `d` (R's version of object-oriented programming, if you are familiar with that).
-
-
-
-```{r}
-x_df <- data.frame(x = d$x, x.dens = d$y)
-#ggplot is designed for data.frame
-ggplot(x_df, aes(x = x, y = x.dens)) +
-  geom_line(color = "blue") +
-  labs(y = 'Density, p(x)', title = 'Kernel Density Estimate of apartment sizes') +
-  theme_bw()
-```
-
-
-
 \pagebreak
 
-**Exercise 2** 
+# Replicate
 
-There is a similar built-in `lines` function that allows for adding the plot of the estimated density on an existing plot. Use this function to first plot a histogram of the `price` variable, with the kernel density estimate overlaid on top.
+`replicate` function in R can be used to replicate a function a certain number of times. The replicate function takes two arguments -- the number of replications (B), and the function to replicate. 
 
-```{r e2}
-# insert your code here
-```
-
-\pagebreak
-
-# Violin Plots
-
-To plot violin plots, we will use the function available in a user-contributed package called `vioplot`. R is very powerful in statistical analysis mainly due to a huge community that supports it. Experts contribute to R through packages which are easily accessible (through [CRAN](https://cran.r-project.org/)). 
-
-## Installation (for personal computer)
-
-If you want to use this function on your own computer, you will likely need to install this package (for the lab these have already been installed on the hub). There are two ways to install R packages.
-
-**Installation using Studio Interface**
-
-- Open you RStudio.
-- Click `Packages` window in the bottom right panel and then click install.
-- A window named `install packages` will pop up. Enter the name of packages you want to install. For example, `vioplot` from lecture 1. Make sure you checked `install dependencies` and then click `Install`.
-- If you see the messages in the console similar to the following, you've successfully installed the package! Sometimes the messages will be much longer because many R packages use the code from others (dependencies), and R will need to download and install the dependencies as well. 
-![](installPackages.png)
-- The package name will then appear in the list of `Packages` window. There are already a collection of packages in the list, which we previously installed for you.
-
-**Installation using R Code**
-
-There is a much quicker alternative than clicking bottoms in the first method. You will only need to run the following code (right now it has `eval=FALSE` meaning the markdown will not run it:
-
-```{r, eval=FALSE}
-install.packages("vioplot")
-```
-
-
-## Using vioplot
-
-Once the package is installed, to use functions from your installed packages, you will need to load them by running `library` function.
-
-For example, to load the `vioplot` package:
-
-```{r, warning=FALSE, message=FALSE, echo = F}
-library(vioplot)
-```
-
-The `vioplot` function just draws a simple violin plot:
+We can use the replicate function along with the sample function to simulate rolls of a dice.
 
 ```{r}
-whethermissing <- as.numeric(is.na(craigslist$size))
-df <- data.frame(mis = whethermissing, size = craigslist$size)
-vioplot(size~mis, data = df, xlab = "")
+
+dice <- c(1,2,3,4,5,6)  ## Setting up the die
+
+sample(dice,1) ### A single roll of the draw
+
+B = 10 ##Number of rolls
+
+replicate(B, sample(dice,1))  ## Getting the outcomes for 10 rolls of a die
+
 ```
 
-```{r}
-vioplot(na.omit(craigslist$size))
+
+
+**Exercise ** 
+
+Find the mean and sd of house prices in the craigslist dataset
+
+```{r e2a}
+#insert code here
+
 ```
 
-```{r}
-ggplot(df, aes(x = mis, y = size)) + geom_violin(na.rm = T) +
-  theme_bw()
+Draw a sample of size 50 from craigslist price column and compute the mean of the sample
+
+```{r e2b}
+#insert code here
+
+
 ```
 
-One way using 'ggplot' without creating a new dataframe.
-```{r}
-ggplot(data = craigslist, aes(x = 0, y = size)) + 
-  stat_ydensity( geom = "violin", position = "dodge", bw = "nrd0",
-                 adjust = 0.5, kernel = "gaussian", trim = F, na.rm = T)+
-  theme_bw()
+Repeat the process of drawing a sample of size 50 and calculating it's mean 100 times using `replicate` function 
+
+```{r e2c}
+#insert code here
+
+#Mean100Draws = 
+
 ```
 
-To do divide the data into groups and do multiple violin plots for each group, Professor Purdom has written a function that is available online. You can read in code from online just as you would from your file using `source`:
+Draw a density histogram of 100 replicated draws
 
-```{r}
-source("http://www.stat.berkeley.edu/~epurdom/RcodeForClasses/myvioplot.R")
+```{r e2d}
+#insert code here
+
+
 ```
 
-Now the function `vioplot2` takes the argument `x` that contains the data and `fac` which is the factor variable dividing the data into groups
+Add a normal curve to the density histogram (using the mean and sd from part a )
 
-```{r}
-craigsNoNA<-na.omit(craigslist[,c("size","brs")])
-with(craigsNoNA, vioplot2(size,brs))
+```{r e2e}
+
+
 ```
 
-Notice I had to again remove the NAs, but this time of *both* variables (if I removed only from one, they wouldn't have matched). 
 
-`with` can be a handy function to use to avoid typing the `$` all of the time. It also makes it easier to replicate code for different subsets of the data
-
-```{r}
-craigsNoNA2<-subset(craigsNoNA,brs<=2)
-with(craigsNoNA2, vioplot2(size,brs,col=c("red","blue")))
-```
-
-```{r}
-ggplot(craigslist, aes(x = as.factor(brs), y = size, fill = as.factor(brs))) + 
-  geom_violin(na.rm = T)+
-  # + geom_boxplot(na.rm = T)
-  labs(x = "brs", fill = "brs")
-```
-
-```{r}
-#craigslist %>% filter(brs <= 2) %>%
-ggplot(subset(craigslist,brs <=2), aes(x = as.factor(brs), y = size)) + 
-  geom_violin(na.rm = T) + 
-  labs(x = "brs")
-```
-
-How to interpret the violin plot? The white point stands for the median, the black box in the middle represents the upper quartile and lower quartile. The outlines show the shape of the kernel density and are symmetric around the middle line. 
-
-\pagebreak
-
-**Exercise 3** 
-
-Draw the violin plot of one bedroom rent price split by cities. Do not forget to add titles, axes labels, and legend. Use the function `palette` to provide different colors to the `vioplot2`
-
-```{r e3}
-# insert your code here
-```
 
 
 \pagebreak
@@ -405,20 +324,20 @@ The rent price in Berkeley is much better than Palo Alto! The median monthly ren
 
 \pagebreak
 
-**Exercise 4** 
+**Exercise 3** 
 
 Use `tapply` to get following statistics for each city.
 
 (a) The percentage of listings that are one bedroom;
 
-```{r e4a}
+```{r e3a}
 # insert code here save the precentage of one bedrooms by cites as
 # 'pct.1b'
 ```
 
 (b) the median price of one bedroom listings. (Use the subset `one.bedrooms` created above)
 
-```{r e4b}
+```{r e3b}
 # insert code here save the median of one bedrooms by cites as
 # 'med.ib'
 ```
