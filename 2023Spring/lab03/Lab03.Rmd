@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 ```
 
-Welcome to the lab 2! In this lab, we will focus on
+Welcome to the lab 3! In this lab, we will focus on
 
 1) Histograms (ggplot2)
 2) Kernel Density
