@@ -72,7 +72,7 @@ You will do a permutation test to compare the average one bedroom apartment rent
 
 (a) Subset the dataset to only consider one bedroom apartments in Berkeley and Palo Alto.
 
-```{r e4a}
+```{r e1a}
 # insert code here save the data frame of one bedroom postings 
 # in Berkeley and Palo Alto as
 # 'subset'
@@ -82,7 +82,7 @@ subset = NULL
 
 (b) Calculate the number of postings for Berkeley in the data frame `subset`.
 
-```{r e4b}
+```{r e1b}
 # insert code here save the number of postings for Berkeley as
 # 'no.berkeley'
 
@@ -115,7 +115,7 @@ stat.bootstrap <- NULL
 
 (e) Calculate the p-value of our observed statistic using our approximation of the sampling distribution from part (d). We are testing if there is any difference between the two means. Our null hypothesis is that there is no difference between the two means. Our alternative hypothesis is that there is a difference. 
 
-```{r e4e}
+```{r e1e}
 # insert code here save the observed statistics as
 # 'p.value'
 
@@ -168,13 +168,13 @@ ttest.result[['p.value']]
 
 Now apply t-test to compare the mean rent of one bedroom listings in Palo Alto and Berkeley.
 
-```{r e21}
+```{r e2a}
 # insert code here and save the t-statistic as
 # 'rent.1b.tstat'
 
 rent.1b.tstat <- NULL
 ```
-```{r e22}
+```{r e2b}
 # insert code here and save the p value as
 # 'rent.1b.pvalue'
 
@@ -213,7 +213,7 @@ pt(-1, df=10)
 
 (a) Find the tail probability of a T-score of -2 with 30 degrees of freedom. Divide this by the tail probability of a Z-score of -2.
 
-```{r}
+```{r e3a}
 #insert code here
 #save final answer (ratio) as e3a
 
@@ -222,7 +222,7 @@ e3a = NULL
 
 (b) Repeat part (a) but for 10 degrees of freedom.
 
-```{r}
+```{r e3b}
 #insert code here
 #save final answer (ratio) as e3b
 
