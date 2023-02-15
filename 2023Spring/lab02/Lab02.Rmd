@@ -193,7 +193,7 @@ ggplot(sample_df, aes(samples, y = ..density..)) +
 (a) $X_1$ follows Normal Distribution $N(3.5, 9)$. What is the probability that $-2.5 < X \leq 9.5$? 
 
 ```{r e1a}
-# insert code here
+pnorm(9.5, mean = 3.5, sd = 3) - pnorm(-2.5, mean = 3, sd = 3)
 
 ```
 
