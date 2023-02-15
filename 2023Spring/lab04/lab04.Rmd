@@ -102,7 +102,7 @@ stat.obs <- NULL
 
 \pagebreak
 
-(d) Calculate the permuted statistics (absolte mean difference), repeat for 1000 times. HINT: use `sample` function to sample from a group of observations. You can use either for loop or the `replicate` function introduced above. However, it is a good practive to try `replicate`.
+(d) Calculate the permuted statistics (absolute mean difference), repeat for 1000 times. HINT: use `sample` function to sample from a group of observations. You can use either for loop or the `replicate` function introduced above. However, it is a good practise to try `replicate`.
 
 ```{r e1d}
 # leave seed set as is.
