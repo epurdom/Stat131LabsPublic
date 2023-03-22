@@ -95,7 +95,7 @@ BikeData <- read.csv("DailyBikeSharingDataset.csv")
 # Insert your code for plotting here
 ```
 
-(b) Generate a matrix of scatter plots for all variable pairs in `BikeData` using the `gpairs()` function in the `gpairs` package.
+(b) Generate a matrix of scatter plots for all `numeric` variable pairs in `BikeData` using the `gpairs()` function in the `gpairs` package.
 
 ```{r ex2b}
 library(gpairs)
