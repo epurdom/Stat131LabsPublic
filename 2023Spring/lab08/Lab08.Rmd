@@ -91,13 +91,13 @@ BikeData <- read.csv("DailyBikeSharingDataset.csv")
 
 (a) Generate a matrix of scatter plots for all variable pairs in `BikeData` that are of class `numeric` using the `pairs()` function.
 
-```{r ex2a}
+```{r ex1a}
 # Insert your code for plotting here
 ```
 
 (b) Generate a matrix of scatter plots for all `numeric` variable pairs in `BikeData` using the `gpairs()` function in the `gpairs` package.
 
-```{r ex2b}
+```{r ex1b}
 library(gpairs)
 # Insert your code for plotting here
 ```
