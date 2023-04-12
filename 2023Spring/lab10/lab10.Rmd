@@ -1,0 +1,178 @@
+---
+title: "Lab 10"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r,echo=FALSE,warning=FALSE, include=FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+
+## *Exercise 1* 
+
+We will continue using diamonds dataset
+
+```{r}
+diamonds <- read.csv("diamonds.csv")
+
+diamonds$price = as.numeric(diamonds$price)
+
+## Select Numeric Columns
+diamonds = diamonds[, sapply(diamonds, class) == "numeric"]
+head(diamonds)
+```
+
+```{r}
+### Fitting a linear model
+fit <- lm(price ~ ., data = diamonds)
+summary(fit)
+
+### Getting fitted values
+fitted.vals = fit$fitted.values
+```
+
+### (a) 
+Calculate the residuals, the residual sum of squares (RSS), and the total sum of squares (TSS) using the `fitted.value()`
+```{r}
+# Insert you code here
+# RSS <-
+# TSS <-
+```
+
+### (b) 
+Calculate the R-square ($R^2$) using RSS and TSS. What is the interpretation of $R^2$?
+```{r}
+# Insert you code here, save your results as `Rsq`
+# Rsq <-
+```
+
+### (c)
+Fit another multivariate model (fit.restricted), but this time, drop `length.in.mm`, `width.of.mm` and `depth.in.mm`. Plot the residuals from this model against the variables added as covariates. 
+```{r}
+# fit.restricted <- lm(price ~)
+#summary(fit.restricted)
+
+
+```
+
+
+
+# Regression dianosis
+
+## Red wine dataset
+
+Reload the data.
+```{r}
+wine<- read.csv("winequality-red.csv", sep = ";")
+wine$quality <- wine$quality + rnorm(length(wine$quality))
+```
+
+Fit the model.
+```{r}
+wine.fit <- lm(quality~volatile.acidity+chlorides+free.sulfur.dioxide+total.sulfur.dioxide+pH+sulphates+alcohol, data=wine)
+summary(wine.fit)
+```
+
+
+### Exercise 2
+
+(a) Do regression diagnostics using the `plot` function.
+
+```{r}
+# insert your code here to do regression diagnostics.
+
+```
+
+(b) Answer the following TRUE/FALSE questions based on the diagnostics plot. Uncomment your answer.
+
+```{r}
+### I. The plot indicates heteroscedasticity.
+# TRUE
+# FALSE
+### II. There are non-linearity between the explantory variable and response variable.
+# TRUE
+# FALSE
+### III. The normal assumtion holds for this model.
+# TRUE
+# FALSE
+```
+
+(c) Identify at least two outliers from the data. 
+
+```{r}
+
+```
+
+> I think the sample ??? and ??? are outliers.
+
+
+## Multiple regression with continuous and categorical variables
+
+### Exercise 3
+
+(a) Fit a linear regression model with explanatory variable `carat`, `depth`, `table`, `clarity`, `color` and `cut`.
+
+```{r}
+diamonds <- read.csv("diamonds.csv")
+head(diamonds,2)
+```
+
+
+```{r}
+# Insert you code here, save your model as `fit.categorical`
+# fit.categorical <- lm(price ~ .......
+
+
+```
+
+(b) Write the equation when 
+	i. Clarity is VS2, color is H, and cut is Premium. Replace ??? with numerical values.
+		$$\text{price} = ??? + ??? \cdot \text{carat} + ??? \cdot \text{depth} + ??? \cdot \text{table}$$
+	ii. clarity is I1, color is D and cut is Fair. Replace ??? by numerical values.
+		$$\text{price} = ??? + ??? \cdot \text{carat} + ??? \cdot \text{depth} + ??? \cdot \text{table}$$
+		
+		
+
+## Diamond dataset 
+
+We will include categorical variables in the following analysis.
+Read the data.
+
+```{r}
+diamonds <- read.csv("diamonds.csv")
+diamonds <- diamonds[sample(1:nrow(diamonds), 1000), ]
+head(diamonds)
+```
+
+Fit a linear regression.
+
+```{r}
+diamond.fit <- lm(price ~ carat + cut + color + clarity + depth + table, data = diamonds)
+summary(diamond.fit)
+```
+
+### Exercise 4
+
+(a) Do regression diagnostics using the `plot` function.
+
+```{r}
+# insert your code here to do regression diagnostics.
+```
+
+(b) Answer the following TRUE/FALSE questions based on the diagnostics plot. Uncomment your answer.
+
+```{r}
+### I. The plot indicates heteroscedasticity.
+# TRUE
+# FALSE
+### II. There are non-linearity between the explantory variable and response variable.
+# TRUE
+# FALSE
+### III. The normal assumtion holds for this model.
+# TRUE
+# FALSE
+```
+
