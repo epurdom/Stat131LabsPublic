@@ -1,0 +1,283 @@
+---
+title: "Lab 11"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to the Lab 11! In the first part, we will apply variable selection techniques to find the best subset of covariates to predict the red wine quality using physicochemical tests scores such as citric acid, pH, etc.
+
+The dataset we will be using is related to red variants of the Portuguese _vinho verde_ wine. There are 1599 samples available in the dataset. Due to privacy and logistic issues, only physicochemical (inputs) and sensory (the output) variables are available (e.g. there is no data about grape types, wine brand, wine selling price, etc.). 
+
+The explanatory variables are all continuous variables and based on physicochemical tests:
+
+- **fixed acidity**
+- **volatile acidity**
+- **citric acid**
+- **residual sugar**
+- **chlorides**
+- **free sulfur dioxide**
+- **total sulfur dioxide**
+- **density**
+- **pH**
+- **sulphates**
+- **alcohol**
+
+The response variable is the **quality** score between 0 and 10 (based on sensory data).
+
+We randomly split the data into two parts-the `wine` dataset with 1199 samples and the `wine.test` dataset with 400 samples. Splitting the dataset is a common technique when we want to evaluate the model performance. There are training set, validation set, and test set. The validation set is used for model selection. That is, to estimate the performance of the different model in order to choose the best one. The test set is used for estimating the performance of our final model.
+
+```{r}
+set.seed(20170413)
+wine.dataset <- read.csv("winequality-red.csv", sep = ";")
+test.samples <- sample(1:nrow(wine.dataset), 400)
+wine <- wine.dataset[-test.samples, ]
+wine.test <- wine.dataset[test.samples, ]
+```
+
+We now fit a linear regression using all of the explanatory variables:
+
+```{r}
+wine.fit <- lm(quality ~. ,data = na.omit(wine))
+summary(wine.fit)
+```
+
+
+We start with our full model `wine.fit`.
+
+We can remove the term corresponding to the coefficient estimate with the highest p-value in the full model and print the summary of the new model
+
+```{r}
+# Removing coefficient and saving updated model as `wine.backward`
+remove.index <- which.max(summary(wine.fit)$coefficients[,4])
+wine.backward <- lm(quality ~ . - density, data = wine)
+summary(wine.backward)
+
+```
+
+Which covariate was dropped?
+
+> Your answer here 
+
+In `R`, there are functions which automatically perform variable selection. The `step()` function uses AIC, which is very similar to RSS but also takes the number of explanatory variables into account. For example, to do backward elimination starting with our full model:
+
+```{r}
+step(wine.fit, direction = "backward")
+```
+
+
+## Exercise 1a
+Now try to understand the output of `step()` function. Which variables were omitted from the final model? Provide a list of those variables in order of their elimination, and write the final model.
+
+> Variables eliminated (in order): 
+
+> Final model: 
+
+
+We can use `step()` function with `direction = "forward"` to perform forward selection. 
+
+We start from the model with only intercept term. Use the `step()` function to perform forward selection. 
+```{r}
+wine.forward <- step(lm(quality~1, data = na.omit(wine)),
+                     scope = formula(lm(quality ~., na.omit(wine)))
+                     , direction = "forward")
+
+```
+## Exercise 1b
+
+Write the variables added in order of their addition and the final model.
+
+> Variables added (in order): 
+
+> Final model: 
+
+
+### Exercise 2 
+
+We will use forward and backward selection on diamonds dataset
+```{r}
+diamonds <- read.csv("diamonds.csv")[1:100,]
+```
+
+2a)
+Find the best model using forward selection.
+
+```{r}
+## Your code here
+```
+
+2b)
+Find the best model using backward selection.
+```{r}
+## Your code here
+```
+
+
+
+# Regression on all subsets of variables
+To find the optimal subset of a certain number of variables for a regression, and to compare between different numbers of variables, use the `regsubsets()` function in the `leaps` package.
+
+```{r}
+require(leaps)
+regsub_out <- regsubsets(x = wine[, -12], y = wine[, 12])
+
+summary(regsub_out)
+```
+
+### Exercise 3
+
+Use the output of `summary(regsub_out)` to answer the following questions 
+
+3a) Write the formula for the optimal model that uses 3 variables
+
+> quality ~ .... + ..... + .......
+
+
+3b) Write the formula for the optimal model that uses 7 variables
+
+> quality ~ ...........
+
+
+We can use coef to find the optimal model
+
+```{r}
+#optimal model that uses 7 variables
+coef(regsub_out, 7)
+```
+
+
+Is the optimal model with 7 covariates the same as the model found in exercise 1?
+
+> 
+
+
+# Cross Validation
+
+
+### Exercise 4
+We will use bodyfat data for this exercise
+```{r}
+body = read.csv("bodyfat_short.csv")
+```
+
+To perform cross validation on the BodyFat dataset we can use the following function. 
+Note: the model in the function includes all the variables in the dataset.
+
+```{r}
+# Define a function to perform k-fold cross-validation on  BODYFAT dataset using a linear regression model
+# k - number of folds
+
+cv_lm <- function(k = 10) {
+  
+  data = body
+  # Set the seed for reproducibility
+  set.seed(123)
+  
+  # Determine the number of observations and observations per fold
+  n <- nrow(data)
+  n_per_fold <- floor(n / k)
+  
+  # Shuffle the data
+  shuffled_data <- data[sample(n), ]
+  
+  # Initialize the vector to store the CV performance
+  cv_performance <- numeric(k)
+  
+  # Loop over each fold
+  for (i in 1:k) {
+    
+    # Determine the indices for the current fold
+    start_index <- (i - 1) * n_per_fold + 1
+    end_index <- min(start_index + n_per_fold - 1, n)
+    current_indices <- start_index:end_index
+    
+    # Split the data into training and validation sets
+    train_data <- shuffled_data[-current_indices, ]
+    validation_data <- shuffled_data[current_indices, ]
+    
+    # Fit the model on the training set
+    lm_model <- lm(BODYFAT ~ ., data = train_data)
+    
+    # Predict on the validation set
+    y_pred <- predict(lm_model, newdata = validation_data)
+    
+    # Calculate the mean squared error
+    mse <- mean((validation_data$BODYFAT - y_pred)^2)
+    
+    # Store the performance measure for the current fold
+    cv_performance[i] <- mse
+  }
+  
+  # Calculate the average performance measure across folds
+  avg_cv_performance <- mean(cv_performance)
+  
+  # Return the average performance measure
+  return(cv_performance)
+}
+
+cv_lm(10)
+```
+The function provides mean of mse for k folds for a model that includes all covariates. What if we want to perform cross validation for different models? 
+
+
+We can find the optimal subsets using the `regsubsets()` for bodyfat data and get different models.
+```{r}
+library(leaps)
+bFat = regsubsets(BODYFAT ~ ., body)
+
+summary(bFat)
+```
+
+
+
+## CV
+```{r}
+set.seed(78912)
+permutation<-sample(1:nrow(body))
+
+folds <- cut(1:nrow(body),breaks=10,labels=FALSE) ## Line 1
+
+#Perform 10 fold cross validation
+predErrorMat<-matrix(nrow=10,ncol=nrow(summary(bFat)$which))
+for(i in 1:10){
+    #Segement your data by fold using the which() function 
+    testIndexes <- which(folds==i,arr.ind=TRUE)
+    testData <- body[permutation,][testIndexes, ] ## Line 2
+    trainData <- body[permutation,][-testIndexes, ]
+    #Use the test and train data partitions however you desire...
+    
+   
+    predError<-apply(summary(bFat)$which[,-1],1,function(x){  ## Line 3
+        lmObj<-lm(trainData$BODYFAT~.,data=trainData[,-1][,x,drop=FALSE])  ## Line 4
+        testPred<-predict(lmObj,newdata=testData[,-1])
+        mean((testData$BODYFAT-testPred)^2)  ## Line 5
+    })
+    predErrorMat[i,]<-predError ##Line 6
+}
+predErrorMat
+
+```
+
+Describe in a few sentences what Lines 1-6 do 
+
+> Line 1:
+
+> Line 2:
+
+> Line 3:
+
+> Line 4:
+
+> Line 5:
+
+> Line 6:
+
+
+
+
+
